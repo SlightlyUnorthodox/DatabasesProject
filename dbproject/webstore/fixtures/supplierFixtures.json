@@ -1,0 +1,8 @@
+[
+{
+	"model":"webstore.supplier",
+	"pk":1,
+	"fields":{
+		"supplier_name":"Dans Happy FunFun Times"
+	}
+}]
