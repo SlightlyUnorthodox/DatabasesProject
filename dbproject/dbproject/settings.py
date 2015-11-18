@@ -79,8 +79,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+Temp_Path = os.path.realpath('.')
 
+STATIC_ROOT = ''
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL =  '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),'/static/',
+)
+TEMPLATE_DIRS = (
+    Temp_Path+"/template",
+)
