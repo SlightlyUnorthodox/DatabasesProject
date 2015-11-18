@@ -1,3 +1,8 @@
+# Title: Fall 2015 CIS4301 Project checkpoint 1
+# Authors: Dax Gerts and Noah Presser
+# Date: 13 November 2015
+# Description: Schema definition for django web store database
+
 BEGIN;
 CREATE TABLE "webstore_contains" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "quantity" integer NOT NULL);
 CREATE TABLE "webstore_order" ("order_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "order_date" date NOT NULL, "order_paid" integer NOT NULL);
