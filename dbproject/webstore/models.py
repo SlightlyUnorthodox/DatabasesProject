@@ -1,15 +1,25 @@
 # Testing django database syntax for online store implementation -Dax
 
+
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator
+
 
 class User(models.Model):
 	user_id = models.AutoField(primary_key=True)
 	def __unicode__(self):
 		return self.user_id
-	user_name = models.CharField(max_length=50)
+	user_name = models.CharField(
+		max_length=50, 
+		validators=[MinLengthValidator(8, "Your username must contain at least 8 characters.")],
+		unique=True)
 	def __unicode__(self):
 		return self.user_name
-	user_password = models.CharField(max_length=50)
+	user_password = models.CharField(
+		max_length=50,
+		validators=[MinLengthValidator(8, "Your password must contain at least 8 characters.")],
+		)
 	def __unicode__(self):
 		return self.user_password
 	user_address = models.CharField(max_length=50)
