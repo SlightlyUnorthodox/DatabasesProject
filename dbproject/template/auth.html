@@ -1,28 +1,48 @@
 <!-- // templates/auth.html -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"/>
 <head>
 <title>Log in</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<style>
-body{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size: 12px;
-}
-</style>
+
+<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
 </head>
+
 <body>
-	{{ state }}
-	<form action="/login/" method="POST">{% csrf_token %}
+<body class="align">
+	<div class="site__container">
+	<div class="grid__container">
+    
+    <h1>Welcome</h1>
+    {{ state }}
+     <form action="/login/" method="post" class="form form--login"/>{% csrf_token %}
 		{% if next %}
-		<input type="hidden" name="next" value="{{ next }}" />
+		<input type="hidden" name="next" value="{{ next }}"/>
 		{% endif %}
-		username: 
-		<input type="text" name="username" value="{{ username}}" /><br />
-		password:
-		<input type="password" name="password" value="" /><br />
-		
-		<input type="submit" value="Log In" />
-	</form>
+        <div class="form__field">
+          <label class="fontawesome-user" for="login__username"><span class="hidden">Username</span></label>
+          <input id="login__username" type="text" class="form__input" placeholder="Username" value = "{{ username}}"required>
+        </div>
+
+        <div class="form__field">
+          <label class="fontawesome-lock" for="login__password"><span class="hidden">Password</span></label>
+          <input id="login__password" type="password" class="form__input" placeholder="Password" value="" required>
+        </div>
+
+        <div class="form__field">
+          <input type="submit" value="Log In"/>
+        </div>
+
+      </form>
+
+      <p class="text--center">Not a member? <a href="register.html">Sign up now</a> <span class="fontawesome-arrow-right"></span></p>
+
+    </div>
+
+  </div>
+
 </body>
+    
+</body>
+
 </html>

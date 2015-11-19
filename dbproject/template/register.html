@@ -4,30 +4,59 @@
 <head>
 <title>Register</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<style>
-body{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size: 12px;
-}
-</style>
+
+<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
 </head>
+
 <body>
-	{{ state }}
-	<form action="/register/" method="POST">{% csrf_token %}
+<body class="align">
+	<div class="site__container">
+	<div class="grid__container">
+
+	<h1>Register</h1>
+    {{ state }}
+     <form action="/register/" method="post" class="form form--login"/>{% csrf_token %}
 		{% if next %}
-		<input type="hidden" name="next" value="{{ next }}" />
+		<input type="hidden" name="next" value="{{ next }}"/>
 		{% endif %}
-		username: 
-		<input type="text" name="username" value="{{ username}}" /><br />
-		password:
-		<input type="password" name="password" value="" /><br />
-		re-password:
-		<input type="password" name="passwordCheck" value="" /><br />
-		email:
-		<input type="text" name="email" value="{{ email}}" /><br />
-		address:
-		<input type="text" name="address" value="{{ address}}" /><br />
-		<input type="submit" value="Log In" />
+
+		<div class="form__field">
+          <label class="fontawesome-user" for="register__username"><span class="hidden">Username</span></label>
+          <input id="register__username" type="text" class="form__input" placeholder="Username" value = "{{ username}}"required>
+        </div>
+
+		<div class="form__field">
+          <label class="fontawesome-lock" for="register__password"><span class="hidden">Password</span></label>
+          <input id="register__password" type="password" class="form__input" placeholder="Password" value="" required>
+        </div>
+		
+		<div class="form__field">
+          <label class="fontawesome-lock" for="register__re-password"><span class="hidden">Re-Password</span></label>
+          <input id="register__re-password" type="password" class="form__input" placeholder="Re-Password" value="" required>
+        </div>
+		
+		<div class="form__field">
+          <label class="fontawesome-lock" for="register__email"><span class="hidden">Email</span></label>
+          <input id="register__email" type="text" class="form__input" placeholder="Email" value="" required>
+        </div>
+
+        <div class="form__field">
+          <label class="fontawesome-lock" for="register__address"><span class="hidden">Address</span></label>
+          <input id="register__address" type="text" class="form__input" placeholder="Address" value="" required>
+        </div>
+
+		<div class="form__field">
+          <input type="submit" value="Register"/>
+        </div>
+
 	</form>
+    
+    </div>
+
+  </div>
+
 </body>
+    
+</body>
+
 </html>

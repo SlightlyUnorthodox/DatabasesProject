@@ -3,6 +3,8 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import *
+#import necessary models
+from .models import User, Order, Supplier, Contains, Product
 
 def index(request):
 	return HttpResponse("Welcome to [name of webstore here]'s index.")

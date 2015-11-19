@@ -19,8 +19,8 @@ class User(models.Model):
 	def __unicode__(self):
 		return self.user_email
 	user_is_staff = models.BooleanField(default=False)
-	def __unicode__(self):
-		return self.user_is_staff
+	#def __unicode__(self):
+	#	return self.user_is_staff
 	# many-to-one relationship "orders"
 	# i.e./ many orders to one customer
 	pass
