@@ -7,7 +7,10 @@ from django.core.validators import MinLengthValidator
 
 
 class User(models.Model):
-	user_id = models.AutoField(primary_key=True)
+	user_id = models.AutoField(
+		primary_key=True,
+		validators=[MinLengthValidator(8, "You username must contain at least 8 characters.")]
+		)
 	def __unicode__(self):
 		return self.user_id
 	user_password = models.CharField(
