@@ -10,46 +10,62 @@
 
 <body>
 <body class="align">
-	<div class="site__container">
-	<div class="grid__container">
+  <div class="site__container">
+  <div class="grid__container">
 
-	<h1>Register</h1>
+  <h1>Register</h1>
     {{ state }}
      <form action="/register/" method="post" class="form form--login"/>{% csrf_token %}
-		{% if next %}
-		<input type="hidden" name="next" value="{{ next }}"/>
-		{% endif %}
+    {% if next %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+    {% endif %}
 
-		<div class="form__field">
+    {{ form.non_field_errors}}
+    <div class="form__field">
+          {{ form.username.errors }}
+          {{ form.username.label_tag }}
           <label class="fontawesome-user" for="register__username"><span class="hidden">Username</span></label>
-          <input id="register__username" type="text" class="form__input" placeholder="Username" value = "{{ username}}"required>
+          {{ form.username}}
+          <!--<input id="register__username" type="text" class="form__input" placeholder="Username" value = "{{ username}}"required>-->
         </div>
 
-		<div class="form__field">
+    <div class="form__field">
+          {{ form.password.errors }}
+          {{ form.password.label_tag }}
           <label class="fontawesome-lock" for="register__password"><span class="hidden">Password</span></label>
-          <input id="register__password" type="password" class="form__input" placeholder="Password" value="" required>
+          {{ form.password }}
+          <!--<input id="register__password" type="password" class="form__input" placeholder="Password" value="" required>-->
         </div>
-		
-		<div class="form__field">
+    
+    <div class="form__field">
+          {{ form.repassword.errors }}
+          {{ form.repassword.label_tag }}
           <label class="fontawesome-lock" for="register__re-password"><span class="hidden">Re-Password</span></label>
-          <input id="register__re-password" type="password" class="form__input" placeholder="Re-Password" value="" required>
+          {{ form.repassword }}
+          <!--<input id="register__re-password" type="password" class="form__input" placeholder="Re-Password" value="" required>-->
         </div>
-		
-		<div class="form__field">
+    
+    <div class="form__field">
+          {{ form.email.errors }}
+          {{ form.email.label_tag }}
           <label class="fontawesome-lock" for="register__email"><span class="hidden">Email</span></label>
-          <input id="register__email" type="text" class="form__input" placeholder="Email" value="" required>
+          {{ form.email }}
+          <!-- <input id="register__email" type="text" class="form__input" placeholder="Email" value="" required> -->
         </div>
 
         <div class="form__field">
+          {{ form.address.errors }}
+          {{ form.address.label_tag }}
           <label class="fontawesome-lock" for="register__address"><span class="hidden">Address</span></label>
-          <input id="register__address" type="text" class="form__input" placeholder="Address" value="" required>
+          {{ form.address }}
+          <!--<input id="register__address" type="text" class="form__input" placeholder="Address" value="" required>-->
         </div>
 
-		<div class="form__field">
+    <div class="form__field">
           <input type="submit" value="Register"/>
         </div>
 
-	</form>
+  </form>
     
     </div>
 

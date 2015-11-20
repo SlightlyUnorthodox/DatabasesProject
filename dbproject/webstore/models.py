@@ -10,12 +10,6 @@ class User(models.Model):
 	user_id = models.AutoField(primary_key=True)
 	def __unicode__(self):
 		return self.user_id
-	user_name = models.CharField(
-		max_length=50, 
-		validators=[MinLengthValidator(8, "Your username must contain at least 8 characters.")],
-		unique=True)
-	def __unicode__(self):
-		return self.user_name
 	user_password = models.CharField(
 		max_length=50,
 		validators=[MinLengthValidator(8, "Your password must contain at least 8 characters.")],
@@ -31,6 +25,12 @@ class User(models.Model):
 	user_is_staff = models.BooleanField(default=False)
 	#def __unicode__(self):
 	#	return self.user_is_staff
+	user_name = models.CharField(
+		max_length=50, 
+		validators=[MinLengthValidator(8, "Your username must contain at least 8 characters.")],
+		unique=True)
+	def __unicode__(self):
+		return self.user_name
 	# many-to-one relationship "orders"
 	# i.e./ many orders to one customer
 	pass
@@ -79,9 +79,6 @@ class Product(models.Model):
 	product_id = models.AutoField(primary_key=True)	
 	def __unicode__(self):
 		return self.product_id
-	product_name = models.CharField(max_length=50)
-	def __unicode__(self):
-		return self.product_name
 	product_description = models.CharField(max_length=200)
 	def __unicode__(self):
 		return self.product_description
@@ -105,3 +102,6 @@ class Product(models.Model):
 	contains = models.ForeignKey(Contains)
 	def __unicode__(self):
 		return self.contains
+		product_name = models.CharField(max_length=50)
+	def __unicode__(self):
+		return self.product_name

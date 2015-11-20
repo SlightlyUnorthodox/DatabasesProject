@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import *
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
+from .forms import LoginForm, RegisterForm
 
 @login_required(login_url='/login/')
 def index(request):
@@ -14,56 +15,81 @@ def index(request):
 #CSRF tokens not enfored in test environment
 @csrf_exempt
 def login_user(request):
-	logout(request)
-	try:
-		state
-	except NameError:
-		state = "Please enter login information below"
+	#logout(request)
+	#try:
+	#	state
+	#except NameError:
+	#state = "Please enter login information below"
 
 	username = password = ''
 	if request.method == 'POST':
-		username = request.POST.get('username')
-		password = request.POST.get('password')
 
-		user = authenticate(username=username, password=password)
-		
-		if user is not None:
-			if user.is_active:
-				login(request, user)
-				state = "You've logged in!"
-				return render(request, 'index.html')
-			else:
-				state = "Your username and/or password were incorrect."
-		else:
-			state = "Your account is not active, please contact the site admin."
+		form = LoginForm(request.POST)
+
+		if form.is_valid():
 			
-	return render_to_response('auth.html',{'state':state, 'username': username})
+			username = request.POST.get('username')
+			password = request.POST.get('password')
+
+			if User.objects.filter(user_name = username).exists():
+				user = User.objects.get(user_name = username)
+
+				if user.user_password == password:
+					print("Log: successfully logged in")
+					state = "You've logged in!"
+					return render(request, 'index.html')
+				else:
+					print("Log: password inccorect")
+					state = "Your username and/or password were incorrect."
+			else:
+				print("Log: username does not exist")
+				state = "Your account is not active, please contact the site admin."
+	else:
+		form = LoginForm()
+			
+	return render(request, 'auth.html',{'form':form})
 
 #CSRF tokens not enforced in test environment
 @csrf_exempt
 def register_user(request):
-	try:
-		state
-	except NameError:
-		state = "Please enter registration information below"
+	#try:
+	#	state
+	#except NameError:
+	#	state = "Please enter registration information below"
 	
 	address = username = password = passwordCheck = email = ''
+	
 	if request.method == 'POST':
-		print("yoyo")
-		newUsername = request.POST.get('username')
-		newPassword = request.POST.get('password')
-		newPasswordCheck = request.POST.get('re-password')
-		newAddress = request.POST.get('address')
-		newEmail = request.POST.get('email')
+	
+		form = RegisterForm(request.POST)
+		
+		if form.is_valid():
 
-		if password != passwordCheck:
-			state = "Your entered password does not match. Please re-enter"
-			return render_to_response('register.html',{'state':state,'username':username})
+			newUsername = request.POST.get('username')
+			newPassword = request.POST.get('password')
+			newPasswordCheck = request.POST.get('repassword')
+			newAddress = request.POST.get('address')
+			newEmail = request.POST.get('email')
 
-		# Attempt to add to database, check successful
+			print(newUsername)
+			print(newPassword)
+			print(newPasswordCheck)
+			print(newAddress)
+			print(newEmail)
+
+			if newPassword != newPasswordCheck:
+				state = "Your entered password does not match. Please re-enter"
+				return render(request, 'register.html',{'form':form})
+
+			# Attempt to add to database, check successful
+			else:
+				newUser = User(user_name = newUsername,user_password = newPassword,user_address = newAddress,user_email = newEmail)
+				newUser.save()
+				print("Log: new user successfully created")
+				state = "New account created. Now login!"
+				return render(request, 'auth.html',{'form':form})
 		else:
-			newUser = User(username = newUser,password =newPassword, address = newAddress,email = newEmail)
-			newUser.save()
-			return render_to_response('login.html',{'state':state,'username':username})
+			form = RegisterForm()
+		
 	state = "Please enter correct information"
-	return render_to_response('register.html',{'state':state,'username':username})
+	return render(request, 'register.html',{'form':form})
