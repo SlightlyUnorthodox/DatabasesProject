@@ -61,7 +61,7 @@ def register_user(request):
 	
 	if request.method == 'POST':
 	
-		form = RegisterForm(request.POST)
+		#form = RegisterForm(request.POST)
 		
 		if form.is_valid():
 
@@ -70,12 +70,6 @@ def register_user(request):
 			newPasswordCheck = request.POST.get('repassword')
 			newAddress = request.POST.get('address')
 			newEmail = request.POST.get('email')
-
-			print(newUsername)
-			print(newPassword)
-			print(newPasswordCheck)
-			print(newAddress)
-			print(newEmail)
 
 			if newPassword != newPasswordCheck:
 				state = "Your entered password does not match. Please re-enter"
@@ -88,8 +82,8 @@ def register_user(request):
 				print("Log: new user successfully created")
 				state = "New account created. Now login!"
 				return render(request, 'auth.html',{'form':form})
-		else:
-			form = RegisterForm()
+	else:
+		form = RegisterForm()
 		
 	state = "Please enter correct information"
 	return render(request, 'register.html',{'form':form})
