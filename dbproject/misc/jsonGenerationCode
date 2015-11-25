@@ -1,0 +1,39 @@
+//MUST GENERATE EACH MODEL SEPARATELY
+//Run at www.json-generator.com
+
+//Supplier Generation 1000 values
+
+//Supplier Generation 1000 values
+
+[
+  '{{repeat(1)}}',
+  {
+    model: "webstore.supplier",
+    pk: '{{index()}}',
+    fields: {
+      supplier_name: '{{company()}}'
+    }
+  }
+]
+
+//User Generation 1000 values
+[
+  '{{repeat(1000)}}',
+  {
+    model: "webstore.user",
+    pk: '{{index()}}',
+    fields: {
+      user_name: '{{firstName()}} {{surname()}}',
+      user_is_staff: '{{bool()}}',
+      user_email: '{{email()}}',
+      user_address: '{{integer(100,999)}} {{street()}}',
+      user_password: '{{random(integer(10000000,99999999))}}'
+    }
+  }
+
+// Order Generation 1000 values
+  
+// Product Generation 1000 values
+
+// Contains Generation 1000 values
+]

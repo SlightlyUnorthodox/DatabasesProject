@@ -3,6 +3,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+	url(r'^$', include('webstore.urls')),
 	url(r'^login/','webstore.views.login_user'),
 	url(r'^register/','webstore.views.register_user'),
 	url(r'^browse/','webstore.views.browse'),
