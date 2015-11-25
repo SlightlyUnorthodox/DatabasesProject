@@ -10,4 +10,5 @@ urlpatterns = patterns('',
 	#url(r'^$','home.views.index'),
     url(r'^index/', include('webstore.urls')),
     url(r'^admin/', include(admin.site.urls)),
+   # url(r'^noah/', 'templates.browse.html'),
 )
