@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import *
+from django.core.urlresolvers import reverse
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm
@@ -18,7 +19,10 @@ def index(request):
 #@login_required(login_url='/login')
 def browse(request):
 	template = loader.get_template('browse.html')
-	context = RequestContext(request)
+	product_list = Product.objects.order_by('Product_id')
+	context = RequestContext(request, {
+		'product_list': product_list,
+		})
 	return HttpResponse(template.render(context))
 
 #@login_required(login_url='/login')
@@ -47,6 +51,7 @@ def login_user(request):
 				if user.user_password == password:
 					print("Log: successfully logged in")
 					state = "You've logged in!"
+					HttpResponseRedirect('index.html')
 					return render(request, 'index.html')
 					#return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 				else:
