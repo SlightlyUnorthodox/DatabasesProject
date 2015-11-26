@@ -18,8 +18,9 @@ def index(request):
 
 #@login_required(login_url='/login')
 def browse(request):
+
+	product_list = Product.objects.order_by('product_id')
 	template = loader.get_template('browse.html')
-	product_list = Product.objects.order_by('Product_id')
 	context = RequestContext(request, {
 		'product_list': product_list,
 		})
