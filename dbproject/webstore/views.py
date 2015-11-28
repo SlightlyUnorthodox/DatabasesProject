@@ -3,6 +3,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import render_to_response, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import *
 from django.core.urlresolvers import reverse
 #import necessary models
@@ -26,16 +27,19 @@ def browse(request):
 		})
 	return HttpResponse(template.render(context))
 
-#@login_required(login_url='/login')
+@login_required(login_url='/login')
 def account(request):
 	template = loader.get_template('account.html')
 	context = RequestContext(request)
 	return HttpResponse(template.render(context))
 
+def logout_user(request):
+	logout(request)
+
 #CSRF tokens not enfored in test environment
 @csrf_exempt
 def login_user(request):
-	
+	logout_user(request)
 	username = password = ''
 	if request.method == 'POST':
 
@@ -50,6 +54,8 @@ def login_user(request):
 				user = User.objects.get(user_name = username)
 
 				if user.user_password == password:
+					#userAuth = authenticate(user.user_name = username,user.user.user_password = password)
+					login(request, username)
 					print("Log: successfully logged in")
 					state = "You've logged in!"
 					HttpResponseRedirect('index.html')

@@ -61,15 +61,13 @@
   }
 ]
 // Contains Generation 1000 values
-
 [
   '{{repeat(1000)}}',
   {
     model: "webstore.contains",
     pk: '{{index()}}',
     fields: {
-      quantity: '{{integer(0,1000)}}',
-      products: '{{integer(0,999)}}'
+      quantity: '{{integer(0,1000)}}'
     }
   }
 ]
