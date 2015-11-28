@@ -13,7 +13,7 @@
   <div class="site__container">
   <div class="grid__container">
 
-  <h1>Register</h1>
+  <h1>Update Account Information</h1>
     {{ state }}
      <form action="/account/" method="post" class="form form--login"/>{% csrf_token %}
     {% if next %}
@@ -55,6 +55,7 @@
     <div class="form__field">
           <input type="submit" value="Update Account"/>
         </div>
+        <p class="text--center">Done here? <a href="/index">Continue Browsing</a> <span class="fontawesome-arrow-right"></span></p>
 
   </form>
     

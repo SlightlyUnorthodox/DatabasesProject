@@ -11,12 +11,19 @@ from django.core.urlresolvers import reverse
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm, AccountDeleteForm
 
+#
+# INDEX VIEW (basic html)
+#
+
 def index(request):
 	template = loader.get_template('index.html')
 	context = RequestContext(request)
 	return HttpResponse(template.render(context))
 
-#@login_required(login_url='/login')
+#
+# BROWSE VIEW
+#
+
 def browse(request):
 
 	product_list = Product.objects.order_by('product_id')
@@ -26,6 +33,10 @@ def browse(request):
 		})
 	return HttpResponse(template.render(context))
 
+#
+# ACCOUNT VIEW (main)
+#
+
 def account(request):
 	#Require user login, if not redirect to login page
 	try:
@@ -33,62 +44,85 @@ def account(request):
 	except KeyError:
 		return login_user(request)
 
+	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountActionForm(request.POST)
 		if form.is_valid():
+
+			#Action value dictates which account page is rendered
 			action = request.POST.get('action')
 			if action == '1':
-				print("Update account")
-				accountUpdate(request)
+				print("Log: Update account")
+				return accountUpdate(request)
 			if action == '2':
-				print("Delete account")
+				print("Log: Delete account")
+				return accountDelete(request)
 			if action == '3':
-				print("View orders")
+				print("Log: View orders")
+				#return accountView(request)
+	
+	#Initialize account form on first cycle
 	else:
 		form = AccountActionForm()
 
-	#Initialize form, first pass
 	state = "Please select an account action"
 	return render(request, 'account.html',{'form':form,'state':state})
+
+#
+# ACCOUNT UPDATE VIEW
+#
 
 def accountUpdate(request):
 	#Require user login, if not redirect to login page
 	try:
-		return request.session['username']
+		activeUser = request.session['username']
 	except KeyError:
 		return login_user(request)
 
+	newPassword = newPasswordCheck = newAddress = newEmail = ''
+	form = AccountUpdateForm()
+
+	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
 		if form.is_valid():
 			
+			#Assign update attributes
 			newPassword = request.POST.get('password')
 			newPasswordCheck = request.POST.get('repassword')
 			newAddress = request.POST.get('address')
 			newEmail = request.POST.get('email')
 
-			if User.objects.filter(user_email = newEmail).exists():
+			#Load user reference
+			user = User.objects.get(user_name = activeUser)
+			print(user.user_name)
+
+			#If new email is assigned, checks for uniqueness, if not unique, report and cycle
+			if User.objects.filter(user_email = newEmail).exists() & User.objects.get(user_email = newEmail) == False:
 				state = "Email already exists"
 				print("Log: email already exists")
 				return render(request, 'register.html',{'form':form,'state':state})
 			
+			#Checks password matching, if not, report and cycle
 			if newPassword != newPasswordCheck:
 				state = "Your entered password does not match. Please re-enter"
 				return render(request, 'register.html',{'form':form,'state':state})
 
-			# Attempt to add to database, check successful
+			# Attempt to update database, check successful, if successful return to account page
 			else:
-				newUser = User(user_name = newUsername,user_password = newPassword,user_address = newAddress,user_email = newEmail)
+				user.user_password = newPassword
+				user.user_email = newEmail
+				user.user_address = newAddress
 				newUser.save()
 				print("Log: new user successfully created")
 				state = "New account created. Now login!"
-				return render(request, 'auth.html',{'form':form,'state':state})
+				return
 
+	#Initialize account form on first cycle
 	else:
 		form = AccountUpdateForm()
 
-	#Initialize form, first pass
-	state = "Enter update account information"
+	state = "Enter updated account information"
 	return render(request, "accountUpdate.html",{'form':form,'state':state})
 
 #
