@@ -8,16 +8,64 @@
     <!-- Title pending for webstore name -->
     <title>WebstoreSQL</title>           
 	<link rel="stylesheet" type="text/css" href= "/static/css/style.css" media = "screen" />
- 	
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 </head>
 
 <body class="align">
+	<div id = "header">
+	
 	<div class="site__container">
 	<div class="grid__container">
-    
-    <div id = "header">
-		<h1>Browse: Test Page</h1>
+	
+	<h1>Browse: Test Pages</h1>
 	</div>
+	{{product_list}}
+    <div class = "container">
+    	<div class="dropdown">
+		<button class="btn btn-primary dropdown-toggle" type="button" ata-toggle="dropdown">Dropdown Menu
+		<span class="caret"></span></button>
+		<ul class="dropdown-menu">
+		    <li><a href="#">Change1</a></li>
+		    <li><a href="#">Change2</a></li>
+		    <li><a href="#">PossiblyChange3</a></li>
+		</ul>
+	</div>
+	{ % if product_list % }
+	<table id="Products" >
+		<tr style="font: bold"> 
+			<th> product_id </th>
+			<th> product_description </th>
+			<th> product_price </th>
+			<th> product_active </th>
+			<th> product_stock_quantity </th>
+			<th> supplys </th>
+			<th> order </th>
+			<th> contains </th>
+			<th> product_name </th>
+		</tr>
+		<tr ng-repeat="p in product_list">
+			<td> p.product_id </td>
+			<td> p.product_description </td>
+			<td> p.product_price </td>
+			<td> p.product_active </td>
+			<td> p.product_stock_quantity </td>
+			<td> p.supplys </td>
+			<td> p.order </td>
+			<td> p.contains </td>
+			<td> p.product_name </td>
+		</tr>
+	</table>	
+
+	{ % else % }
+		NO PRODUCTS TO DISPLAY
+	{ % end if% }
+
+
+	</div>
+    
 	
 
    

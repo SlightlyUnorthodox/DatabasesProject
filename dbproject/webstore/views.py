@@ -1,26 +1,36 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext
+from django.template import RequestContext, loader
 from django.shortcuts import render_to_response, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import *
+from django.core.urlresolvers import reverse
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm
 
 loggedIn = False
 
-@login_required(login_url='/login')
 def index(request):
-	return HttpResponse("Welcome to [name of webstore here]'s index.")
+	template = loader.get_template('index.html')
+	context = RequestContext(request)
+	return HttpResponse(template.render(context))
 
 #@login_required(login_url='/login')
 def browse(request):
-	return HttpResponse("Webstore browsing page")
+
+	product_list = Product.objects.order_by('product_id')
+	template = loader.get_template('browse.html')
+	context = RequestContext(request, {
+		'product_list': product_list,
+		})
+	return HttpResponse(template.render(context))
 
 #@login_required(login_url='/login')
 def account(request):
-	return HttpResponse("Webstore user account page")
+	template = loader.get_template('account.html')
+	context = RequestContext(request)
+	return HttpResponse(template.render(context))
 
 #CSRF tokens not enfored in test environment
 @csrf_exempt
@@ -42,10 +52,11 @@ def login_user(request):
 				if user.user_password == password:
 					print("Log: successfully logged in")
 					state = "You've logged in!"
+					HttpResponseRedirect('index.html')
 					return render(request, 'index.html')
 					#return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 				else:
-					print("Log: password inccorect")
+					print("Log: password incorrect")
 					state = "Your username and/or password were incorrect."
 			else:
 				print("Log: username does not exist")
