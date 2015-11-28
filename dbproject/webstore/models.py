@@ -42,13 +42,13 @@ class Order(models.Model):
 	order_date = models.DateField()
 	def __unicode__(self):
 		return self.order_date
-	order_paid = models.IntegerField()
+	order_paid = models.DecimalField(max_digits=19,decimal_places=2)
 	def __unicode__(self):
 		return self.order_paid
 	# many-to-one relationship "orders"
 	orders = models.ForeignKey(User)
 	def __unicode__(self):
-		return self.orders
+		return '%s' % (self.orders)
 	# many-to-many relationship "contains"
 	pass
 
