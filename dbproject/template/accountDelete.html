@@ -1,0 +1,46 @@
+<!-- // templates/auth.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Delete Account</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
+</head>
+
+<body>
+<body class="align">
+  <div class="site__container">
+  <div class="grid__container">
+
+  <h1>Delete Account</h1>
+    {{ state }}
+     <form action="/account/" method="post" class="form form--login"/>{% csrf_token %}
+    {% if next %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+    {% endif %}
+
+    <div class="form__field">
+          {{ form.confirm.errors }}
+          {{ form.confirm.label_tag }}
+          <label class="fontawesome-lock" for="register__password"><span class="hidden">Confirmation</span></label>
+          {{ form.confirm }}
+          <!--<input id="register__password" type="password" class="form__input" placeholder="Password" value="" required>-->
+        </div>
+    
+    <div class="form__field">
+          <input type="submit" value="Delete Account"/>
+        </div>
+        <p class="text--center">Done here? <a href="/index">Continue Browsing</a> <span class="fontawesome-arrow-right"></span></p>
+
+  </form>
+    
+    </div>
+
+  </div>
+
+</body>
+    
+</body>
+
+</html>

@@ -79,9 +79,6 @@ def accountUpdate(request):
 	except KeyError:
 		return login_user(request)
 
-	newPassword = newPasswordCheck = newAddress = newEmail = ''
-	form = AccountUpdateForm()
-
 	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
@@ -98,15 +95,15 @@ def accountUpdate(request):
 			print(user.user_name)
 
 			#If new email is assigned, checks for uniqueness, if not unique, report and cycle
-			if User.objects.filter(user_email = newEmail).exists() & User.objects.get(user_email = newEmail) == False:
+			if User.objects.filter(user_email = newEmail).exists() & user.user_email != newEmail:
 				state = "Email already exists"
 				print("Log: email already exists")
-				return render(request, 'register.html',{'form':form,'state':state})
+				return render(request, 'accountUpdate.html',{'form':form,'state':state})
 			
 			#Checks password matching, if not, report and cycle
 			if newPassword != newPasswordCheck:
 				state = "Your entered password does not match. Please re-enter"
-				return render(request, 'register.html',{'form':form,'state':state})
+				return render(request, 'accountUpdate.html',{'form':form,'state':state})
 
 			# Attempt to update database, check successful, if successful return to account page
 			else:
@@ -124,6 +121,52 @@ def accountUpdate(request):
 
 	state = "Enter updated account information"
 	return render(request, "accountUpdate.html",{'form':form,'state':state})
+
+#
+# ACCOUNT DELETE VIEW (incomplete)
+#
+
+def accountDelete(request):
+	#Require user login, if not redirect to login page
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+	#Check for POST request, if valid get action value
+	if request.method == 'POST':
+		form = AccountDeleteForm(request.POST)
+		if form.is_valid():
+			print("check0")
+			#Assign update attributes
+			confirm = request.POST.get('confirm')
+			print("check1")
+			#Load user reference
+			user = User.objects.get(user_name = activeUser)
+			print(user.user_name)
+			print(user.email)
+			print("check2")
+			#If confirmatin successfully given, delete account
+			#Report and log success, cycle back to main account page
+			if confirm == user.user_email:
+				state = "Account successfully deleted"
+				print("Log: " + user.user_name + " account deleted")
+				
+				#Delete user
+				User.objects.filter(user_name = activeUser).delete()
+
+				return render(request, 'account.html',{'form':form,'state':state})
+			
+			#If confirmation unsuccessful, report and cycle page
+			state = "Email confirmation incorrect"
+			return render(request, 'accountDelete.html',{'form':form,'state':state})
+
+	#Initialize account form on first cycle
+	else:
+		form = AccountDeleteForm()
+
+	state = "Enter updated account information"
+	return render(request, "accountDelete.html",{'form':form,'state':state})
 
 #
 # LOGIN VIEW

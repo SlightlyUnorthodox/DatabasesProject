@@ -45,5 +45,5 @@ class AccountUpdateForm(forms.Form):
 	address = forms.CharField(label='Address',max_length = 100)
 	
 class AccountDeleteForm(forms.Form):
-	confirm = forms.TextInput(attrs={'placeholder':'Enter your email to confirm'})
+	confirm = forms.CharField(label='Enter email address to confirm account delete')
 		
