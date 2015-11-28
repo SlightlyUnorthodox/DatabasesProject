@@ -1,0 +1,69 @@
+<!-- // templates/auth.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Register</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
+</head>
+
+<body>
+<body class="align">
+  <div class="site__container">
+  <div class="grid__container">
+
+  <h1>Register</h1>
+    {{ state }}
+     <form action="/account/" method="post" class="form form--login"/>{% csrf_token %}
+    {% if next %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+    {% endif %}
+
+    <div class="form__field">
+          {{ form.password.errors }}
+          {{ form.password.label_tag }}
+          <label class="fontawesome-lock" for="register__password"><span class="hidden">Password</span></label>
+          {{ form.password }}
+          <!--<input id="register__password" type="password" class="form__input" placeholder="Password" value="" required>-->
+        </div>
+    
+    <div class="form__field">
+          {{ form.repassword.errors }}
+          {{ form.repassword.label_tag }}
+          <label class="fontawesome-lock" for="register__re-password"><span class="hidden">Re-Password</span></label>
+          {{ form.repassword }}
+          <!--<input id="register__re-password" type="password" class="form__input" placeholder="Re-Password" value="" required>-->
+        </div>
+    
+    <div class="form__field">
+          {{ form.email.errors }}
+          {{ form.email.label_tag }}
+          <label class="fontawesome-lock" for="register__email"><span class="hidden">Email</span></label>
+          {{ form.email }}
+          <!-- <input id="register__email" type="text" class="form__input" placeholder="Email" value="" required> -->
+        </div>
+
+        <div class="form__field">
+          {{ form.address.errors }}
+          {{ form.address.label_tag }}
+          <label class="fontawesome-lock" for="register__address"><span class="hidden">Address</span></label>
+          {{ form.address }}
+          <!--<input id="register__address" type="text" class="form__input" placeholder="Address" value="" required>-->
+        </div>
+
+    <div class="form__field">
+          <input type="submit" value="Update Account"/>
+        </div>
+
+  </form>
+    
+    </div>
+
+  </div>
+
+</body>
+    
+</body>
+
+</html>
