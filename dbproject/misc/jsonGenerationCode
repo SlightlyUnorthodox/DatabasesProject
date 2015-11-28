@@ -3,10 +3,8 @@
 
 //Supplier Generation 1000 values
 
-//Supplier Generation 1000 values
-
 [
-  '{{repeat(1)}}',
+  '{{repeat(1000)}}',
   {
     model: "webstore.supplier",
     pk: '{{index()}}',
@@ -27,13 +25,24 @@
       user_is_staff: '{{bool()}}',
       user_email: '{{email()}}',
       user_address: '{{integer(100,999)}} {{street()}}',
-      user_password: '{{random(integer(10000000,99999999))}}'
+      user_password: '{{integer(10000000,99999999)}}'
     }
   }
-
+]
 // Order Generation 1000 values
-  
+[
+  '{{repeat(1000)}}',
+  {
+    model: "webstore.order",
+    pk: '{{index()}}',
+    fields: {
+      order_date: '{{date(new Date(2015,0,1),new Date(),"YYYY-MM-dd")}}',
+      order_paid: '{{floating(0,100,2)}}',
+      orders: '{{integer(0,999)}}'
+    }
+  }
+]  
 // Product Generation 1000 values
 
 // Contains Generation 1000 values
-]
+
