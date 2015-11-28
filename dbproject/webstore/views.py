@@ -26,17 +26,13 @@ def browse(request):
 		})
 	return HttpResponse(template.render(context))
 
-def checkLoggedIn(request):
-	try:
-		userAccount = request.session['username']
-		return userAccount
-	except KeyError:
-		return render(request,"auth.html")
-
-#@login_required(login_url='/login')	
 def account(request):
-	userAccount = checkLoggedIn(request)
-	print(userAccount)
+	#Require user login, if not redirect to login page
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
 	if request.method == 'POST':
 		form = AccountActionForm(request.POST)
 		if form.is_valid():
@@ -56,6 +52,12 @@ def account(request):
 	return render(request, 'account.html',{'form':form,'state':state})
 
 def accountUpdate(request):
+	#Require user login, if not redirect to login page
+	try:
+		return request.session['username']
+	except KeyError:
+		return login_user(request)
+
 	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
 		if form.is_valid():
@@ -89,47 +91,63 @@ def accountUpdate(request):
 	state = "Enter update account information"
 	return render(request, "accountUpdate.html",{'form':form,'state':state})
 
+#
+# LOGIN VIEW
+#
+
 #CSRF tokens not enfored in test environment
 @csrf_exempt
 def login_user(request):
-	#logout user
+	#logout user from session
 	try:
 		del request.session['username']
 	except KeyError:
 		pass
 
+	#initialize User model reference attributes
 	username = password = ''
+
+	#Check POST request and validate form
 	if request.method == 'POST':
-
 		form = LoginForm(request.POST)
-
 		if form.is_valid():
 			
+			#Assign reference attributes
 			username = request.POST.get('username')
 			password = request.POST.get('password')
 
+			#Confirm user name exists, if not state and cycle form
 			if User.objects.filter(user_name = username).exists():
 				user = User.objects.get(user_name = username)
 
+				#Confirm password matches username
+				#If so state success and redirect
 				if user.user_password == password:
 					print("Log: successfully logged in")
 					state = "You've logged in!"
 					request.session['username'] = user.user_name
 					HttpResponseRedirect('index.html')
 					return render(request, 'index.html')
-					#return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 				else:
+				
+					#If password doesn't match, report and cycle form
 					print("Log: password incorrect")
 					state = "Your username and/or password were incorrect."
+					return render(request, "auth.html",{'form':form,'state':state})
 			else:
+
+				#If username does not exists, report and cycle form
 				print("Log: username does not exist")
-				state = "Your account is not active, please contact the site admin."
+				state = "Your username and/or password were incorrect."
+				return render(request, 'auth.html',{'form':form,'state':state})
 	else:
+
+		#Initialize login form
 		form = LoginForm()
 	
+	#State and cycle rendering
 	state = "Please enter login information"		
 	return render(request, 'auth.html',{'form':form,'state':state})
-
 
 #
 # REGISTRATION VIEW
@@ -184,7 +202,7 @@ def register_user(request):
 	else:
 		#Initialize registration form
 		form = RegisterForm()
-		
+
 	#Cycle initialized form		
 	state = "Please enter registration information"
 	return render(request, 'register.html',{'form':form,'state':state})
