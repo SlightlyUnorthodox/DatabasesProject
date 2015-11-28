@@ -73,7 +73,7 @@ class Contains(models.Model):
 		return self.quantity
 	products = models.ManyToManyField(Order,through='Product')
 	def __unicode__(self):
-		return self.products
+		return '%s' % (self.products)
 
 class Product(models.Model):
 	product_id = models.AutoField(primary_key=True)	
@@ -91,17 +91,18 @@ class Product(models.Model):
 	product_stock_quantity = models.IntegerField()
 	def __unicode__(self):
 		return self.product_stock_quantity
-	# many-to-one relationship "supplys"
-	supplys = models.ForeignKey(Supplier)
-	def __unicode__(self):
-		return self.supplys
 	# many-to-many relationship "contains"
-	order = models.ForeignKey(Order)
+	orders = models.ForeignKey(Order)
 	def __unicode__(self):
-		return self.order
+		return '%s' % (self.orders)
 	contains = models.ForeignKey(Contains)
 	def __unicode__(self):
-		return self.contains
-		product_name = models.CharField(max_length=50)
+		return '%s' % (self.contains)
+	product_name = models.CharField(max_length=50,default="Error: Bad product reference")
 	def __unicode__(self):
 		return self.product_name
+	# many-to-one relationship "supplys"
+	supplies = models.ForeignKey(Supplier)
+	def __unicode__(self):
+		return '%s' % (self.supplies)
+	pass

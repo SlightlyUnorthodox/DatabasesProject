@@ -43,6 +43,33 @@
   }
 ]  
 // Product Generation 1000 values
-
+[
+  '{{repeat(1000)}}',
+  {
+    model: "webstore.product",
+    pk: '{{index()}}',
+    fields: {
+      product_name: '{{lorem(2,"word")}}',
+      product_description: '{{lorem(1,"paragraph")}}',
+      product_stock_quantity: '{{integer(0,10000)}}',
+      product_active: '{{bool()}}',
+      product_price: '{{floating(1,10000,2)}}',
+      supplies: '{{integer(0,999)}}',
+      orders: '{{integer(0,999)}}',
+      contains: '{{integer(0,999)}}'
+    }
+  }
+]
 // Contains Generation 1000 values
 
+[
+  '{{repeat(1000)}}',
+  {
+    model: "webstore.contains",
+    pk: '{{index()}}',
+    fields: {
+      quantity: '{{integer(0,1000)}}',
+      products: '{{integer(0,999)}}'
+    }
+  }
+]
