@@ -1,26 +1,45 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html lang="en">
-<!-- Author: Dax Gerts
-	Date: 18 November 2015
-	Description: Home page design for webstore -->
-<!--<img src="/static/media/blueprint_wide.jpg"/>-->
+<!-- // templates/auth.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <!-- Title pending for webstore name -->
-    <title>WebstoreSQL</title>           
-	<link rel="stylesheet" type="text/css" href= "/static/css/style.css" media = "screen" />
- 	
+<title>Account</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
 </head>
 
+<body>
 <body class="align">
-	<div class="site__container">
-	<div class="grid__container">
-    
-    <div id = "header">
-		<h1>Account: Test Page</h1>
-	</div>
-	
+  <div class="site__container">
+  <div class="grid__container">
 
+  <h1>Account</h1>
+    {{ state }}
+     <form action="/account/" method="post" class="form form--login"/>{% csrf_token %}
+    {% if next %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+    {% endif %}
+
+    {{ form.non_field_errors}}
+    <div class="form__field">
+          {{ form.action.errors }}
+          {{ form.action.label_tag }}
+          <label class="fontawesome-user" for="register__username"><span class="hidden">Action</span></label>
+          {{ form.action}}
+          <!--<input id="register__username" type="text" class="form__input" placeholder="Username" value = "{{ username}}"required>-->
+        </div>
+
+    <div class="form__field">
+          <input type="submit" value="Confirm Action"/>
+        </div>
    
+
+    </div>
+
+  </div>
+
+</body>
     
 </body>
+
 </html>

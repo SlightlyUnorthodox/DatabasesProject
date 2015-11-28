@@ -29,4 +29,21 @@ class RegisterForm(forms.Form):
 	email = forms.CharField(label='Email',max_length = 100)
 	address = forms.CharField(label='Address',max_length = 100)
 
+ACTIONS = (
+	('1','Update Account Information'),
+	('2','Delete User Account'),
+	('3','View Orders'),
+)
+
+class AccountActionForm(forms.Form):
+	action = forms.ChoiceField(choices = ACTIONS, required = True)
+
+class AccountUpdateForm(forms.Form):
+	password = forms.CharField(min_length=8,widget=forms.PasswordInput())
+	repassword = forms.CharField(label='RePassword',min_length=8,widget=forms.PasswordInput())
+	email = forms.CharField(label='Email',max_length = 100)
+	address = forms.CharField(label='Address',max_length = 100)
 	
+class AccountDeleteForm(forms.Form):
+	confirm = forms.TextInput(attrs={'placeholder':'Enter your email to confirm'})
+		

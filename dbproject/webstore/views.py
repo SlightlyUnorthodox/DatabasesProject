@@ -5,12 +5,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import *
+from django.views.generic import FormView
 from django.core.urlresolvers import reverse
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm, AccountDeleteForm
 
-loggedIn = False
 
 def index(request):
 	template = loader.get_template('index.html')
@@ -27,11 +27,27 @@ def browse(request):
 		})
 	return HttpResponse(template.render(context))
 
-@login_required(login_url='/login')
+#@login_required(login_url='/login')	
 def account(request):
-	template = loader.get_template('account.html')
-	context = RequestContext(request)
-	return HttpResponse(template.render(context))
+
+	if request.method == 'POST':
+		form = AccountActionForm(request.POST)
+		if form.is_valid():
+			action = request.POST.get('action')
+			if action == '1':
+				print("Update account")
+			if action == '2':
+				print("Delete account")
+			if action == '3':
+				print("View orders")
+
+
+	else:
+		form = AccountActionForm()
+
+	#Initialize form, first pass
+	state = "Please select an account action"
+	return render(request, 'account.html',{'form':form,'state':state})
 
 def logout_user(request):
 	logout(request)
@@ -54,7 +70,7 @@ def login_user(request):
 				user = User.objects.get(user_name = username)
 
 				if user.user_password == password:
-					#userAuth = authenticate(user.user_name = username,user.user.user_password = password)
+					userAuth = authenticate(username = username,password = password)
 					login(request, username)
 					print("Log: successfully logged in")
 					state = "You've logged in!"
