@@ -22,19 +22,23 @@
 	
 	<h1>Browse: Test Pages</h1>
 	</div>
+	TEST:
 	{{product_list}}
-    <div class = "container">
-    	<div class="dropdown">
-		<button class="btn btn-primary dropdown-toggle" type="button" ata-toggle="dropdown">Dropdown Menu
-		<span class="caret"></span></button>
-		<ul class="dropdown-menu">
-		    <li><a href="#">Change1</a></li>
-		    <li><a href="#">Change2</a></li>
-		    <li><a href="#">PossiblyChange3</a></li>
-		</ul>
+
+    <div class="dropdown" style="margin-bottom:10px;">
+        <button aria-expanded="false" class="btn btn-primary dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Sorting (nonfunctional)
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu test" role="menu" aria-labelledby="menu1">
+          <li role="presentation"><a role="menuitem" href="">Price</a></li>
+          <li role="presentation"><a role="menuitem" href="">id</a></li>
+          <li role="presentation"><a role="menuitem" href="">whatever</a></li>
+          <li role="presentation" class="divider"></li>
+          <li role="presentation"><a role="menuitem" href="">in case we wanna use this</a></li>
+        </ul>
+      </div>l>
 	</div>
-	{ % if product_list % }
 	<table id="Products" >
+		
 		<tr style="font: bold"> 
 			<th> product_id </th>
 			<th> product_description </th>
@@ -46,22 +50,23 @@
 			<th> contains </th>
 			<th> product_name </th>
 		</tr>
-		<tr ng-repeat="p in product_list">
-			<td> p.product_id </td>
-			<td> p.product_description </td>
-			<td> p.product_price </td>
-			<td> p.product_active </td>
-			<td> p.product_stock_quantity </td>
-			<td> p.supplys </td>
-			<td> p.order </td>
-			<td> p.contains </td>
-			<td> p.product_name </td>
+		{% for p in product_list %}
+		<tr>
+			
+			<td> {{ p.product_id }}</td>
+			<td> {{ p.product_description }} </td>
+			<td> {{ p.product_price }} </td>
+			<td> {{ p.product_active  }}</td>
+			<td> {{ p.product_stock_quantity }} </td>
+			<td> {{ p.supplys }} </td>
+			<td> {{ p.order }} </td>
+			<td> {{ p.contains }} </td>
+			<td> {{ p.product_name }} </td>
+
 		</tr>
+		{% endfor %}
 	</table>	
 
-	{ % else % }
-		NO PRODUCTS TO DISPLAY
-	{ % end if% }
 
 
 	</div>
