@@ -27,12 +27,29 @@ def index(request):
 def browse(request):
 
 	product_list = Product.objects.order_by('product_id')
+	price_sorted_product_list = Product.objects.order_by('product_price')
 	template = loader.get_template('browse.html')
 	context = RequestContext(request, {
 		'product_list': product_list,
+		'price_sorted_product_list': price_sorted_product_list,
 		})
 	return HttpResponse(template.render(context))
 
+#
+# Search attempt	
+#
+
+def search(request):
+	query = request.GET.get('q')
+	try:
+		query = str(query)
+	except ValueError:
+		query = None
+		results = None
+	if query:
+	   	results = Product.objects.order_by('product_name') # product name with str query in it
+		results = results.filter(product_name__icontains='Lorem') #query, need to put in variable
+	return render_to_response('browse.html', {"results" : results}, context_instance=context)
 #
 # ACCOUNT VIEW (main)
 #

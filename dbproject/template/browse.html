@@ -7,24 +7,26 @@
 <head>
     <!-- Title pending for webstore name -->
     <title>WebstoreSQL</title>           
-	<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
+	
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
+  	<link rel="stylesheet" type="text/css" href= "/static/css/style.css" media = "screen" />
 </head>
 
 <body class="align">
-	<div id = "header">
-	
+
 	<div class="site__container">
 	<div class="grid__container">
 	
 	<h1>Browse: Test Pages</h1>
 	</div>
-	TEST:
-	{{product_list}}
-
+	<h2>
+		<form action="/search/">
+			<input type="text" name="spec" id="q" value="{{ query }}" />
+			<input type="submit" value="Search">
+		</form>
+	</h2>
     <div class="dropdown" style="margin-bottom:10px;">
         <button aria-expanded="false" class="btn btn-primary dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Sorting (nonfunctional)
         <span class="caret"></span></button>
@@ -35,23 +37,55 @@
           <li role="presentation" class="divider"></li>
           <li role="presentation"><a role="menuitem" href="">in case we wanna use this</a></li>
         </ul>
-      </div>l>
 	</div>
-	<table id="Products" >
+	{% if results %}
+	<table style="padding: 5px; font-size:150%" id="Products">
 		
 		<tr style="font: bold"> 
-			<th> product_id </th>
-			<th> product_description </th>
-			<th> product_price </th>
-			<th> product_active </th>
-			<th> product_stock_quantity </th>
-			<th> supplys </th>
-			<th> order </th>
-			<th> contains </th>
-			<th> product_name </th>
+			<th> Product ID </th>
+			<th> Product Description </th>
+			<th> Product Price </th>
+			<th> Product Active </th>
+			<th> Product Stock Quantity </th>
+			<th> Supplys </th>
+			<th> Order </th>
+			<th> Contains </th>
+			<th> Product Name </th>
+		</tr>
+		{% for p in results %}
+		<tr >
+			
+			<td> {{ p.product_id }}</td>
+			<td> {{ p.product_description }} </td>
+			<td style="text-align: right"> $ {{ p.product_price }} </td>
+			<td> {{ p.product_active  }}</td>
+			<td> {{ p.product_stock_quantity }} </td>
+			<td> {{ p.supplys }} </td>
+			<td> {{ p.order }} </td>
+			<td> {{ p.contains }} </td>
+			<td> {{ p.product_name }} </td>
+
+		</tr>
+		{% endfor %}
+	{% endif %}
+
+	</table>	
+	<!-- this is a working table
+	<table style="padding: 5px; font-size:150%" id="Products" >
+		
+		<tr style="font: bold"> 
+			<th> Product ID </th>
+			<th> Product Description </th>
+			<th> Product Price </th>
+			<th> Product Active </th>
+			<th> Product Stock Quantity </th>
+			<th> Supplys </th>
+			<th> Order </th>
+			<th> Contains </th>
+			<th> Product Name </th>
 		</tr>
 		{% for p in product_list %}
-		<tr>
+		<tr >
 			
 			<td> {{ p.product_id }}</td>
 			<td> {{ p.product_description }} </td>
@@ -66,7 +100,7 @@
 		</tr>
 		{% endfor %}
 	</table>	
-
+	-->
 
 
 	</div>
