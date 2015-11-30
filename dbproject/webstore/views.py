@@ -41,6 +41,7 @@ def browse(request):
 
 def search(request):
 	query = request.GET.get('q')
+
 	try:
 		query = str(query)
 	except ValueError:
@@ -48,7 +49,10 @@ def search(request):
 		results = None
 	if query:
 	   	results = Product.objects.order_by('product_name') # product name with str query in it
-		results = results.filter(product_name__icontains='Lorem') #query, need to put in variable
+		results = results.filter(**{'product_name__icontains': str(query)}) #query, need to put in variable
+	else:
+		results = None
+	context = RequestContext(request)
 	return render_to_response('browse.html', {"results" : results}, context_instance=context)
 #
 # ACCOUNT VIEW (main)
