@@ -40,6 +40,8 @@
 			<div style="display: ">
 				Tracking what's in order so far
 				<input type="text" name="productsInOrder" value="{{productsInOrder}}">
+				ID list
+				<input type="text" name="productsInOrderByID" value="{{productsInOrderByID}}">
 				Tracking price so far
 				<input type="text" name="price_of_order" value="{{price_of_order}}">
 			</div>
@@ -52,7 +54,7 @@
 	{% if productsInOrder %}
 	<h2> Products In Order: </h2>
 	{% for p in productsInOrder %}
-		<br>{{p.product_name}} 
+		<br>{{p}} 
 	{% endfor %}
 	<h2> Order Price: {{price_of_order}} </h2>
 

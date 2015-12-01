@@ -50,6 +50,11 @@ class Order(models.Model):
 	def __unicode__(self):
 		return '%s' % (self.orders)
 	# many-to-many relationship "contains"
+
+	#def __init__(orderid, orderdate, orderpaid):
+     #   self.order_id = orderid
+      #  self.order_paid = orderpaid
+       # self.order_date = orderdate
 	pass
 
 class Supplier(models.Model):

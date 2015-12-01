@@ -10,6 +10,8 @@ from django.core.urlresolvers import reverse
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm, AccountDeleteForm
+from datetime import datetime
+
 
 #
 # INDEX VIEW (basic html)
@@ -89,9 +91,14 @@ def updateOrder(request):
 		s = request.GET.get('productsInOrder')
 		s = s.replace("'", "")
 		productsInOrder = [e.encode('utf-8') for e in s.strip('[]').split(',')];
+
+		s2 = request.GET.get('productsInOrderByID')
+		s2 = s2.replace("'", "")
+		productsInOrderByID = [e2.encode('utf-8') for e2 in s2.strip('[]').split(',')];
 	else:
 		#create
 		productsInOrder = []
+		productsInOrderByID = []
 
 	try:
 		productToAdd = Product.objects.get(product_name=str(productName))
@@ -101,6 +108,7 @@ def updateOrder(request):
 		#if order already has a product, add this new to the cost and list of products
 		if request.GET.get('price_of_order'):
 			productsInOrder.append(str(productToAdd.product_name)) #this call is incorrect??
+			productsInOrderByID.append(str(productToAdd.product_id))
 			price_of_order = int(request.GET.get('price_of_order')) + productToAdd.product_price;
 			errorMessage = "Additional product added successfully"
 
@@ -108,17 +116,19 @@ def updateOrder(request):
 		#if a product with that name exists, first order
 		else:
 			productsInOrder.append(str(productToAdd.product_name))
+			productsInOrderByID.append(str(productToAdd.product_id))
 			price_of_order = productToAdd.product_price
 			errorMessage = "Product added successfully"
 		#generate the cost based on the product, and order number
 	else:
-		#products there, nothing to add, return same values
+		#products there, noproductIDsInOrder to add, return same values
 		if request.GET.get('price_of_order'):
 			price_of_order = request.GET.get('price_of_order')
 			errorMessage = "No Product of name " + productName 
-		# nothing there, nothing to add
+		# noproductIDsInOrder there, noproductIDsInOrder to add
 		else: 
 			productsInOrder = None
+			productsInOrderByID = None
 			price_of_order = None
 			errorMessage = "No Products in Order"
 
@@ -128,7 +138,7 @@ def updateOrder(request):
 
 
 	context = RequestContext(request)
-	return render_to_response('order.html', {"errorMessage": errorMessage, "productsInOrder": productsInOrder, "price_of_order" : price_of_order}, context_instance=context)
+	return render_to_response('order.html', {"errorMessage": errorMessage, "productsInOrder": productsInOrder, "productsInOrderByID": productsInOrderByID, "price_of_order" : price_of_order}, context_instance=context)
 
 def find_between( s, first, last ):
     try:
@@ -137,6 +147,9 @@ def find_between( s, first, last ):
         return s[start:end]
     except ValueError:
         return ""
+
+def generateOrderID():
+	return 0;
 
 #
 # Displays all orders in the system sorted by most recently placed???
@@ -148,24 +161,29 @@ def placeOrder(request):
 		return login_user(request)
 
 	count = 0
+	
 
 	#Need to change to match IDs
-	if request.GET.get('productsInOrder'):
-		stringOfProductNames = request.GET.get('productsInOrder')
-				#array of product names, parsed from list
-		arrayOfProductNames = stringOfProductNames.replace("[", "").replace("]","")
-		setOfProductsFromNames = []
-		while "'" in arrayOfProductNames:
-			pnameinstance = find_between(arrayOfProductNames, "'", "'")
-			thing.append(Product.objects.filter(product_name=pnameinstance))
-			arrayOfProductNames = arrayOfProductNames.replace("'", "", 2);
+	if request.GET.get('productsInOrderByID'):
+		stringOfProductIDs = request.GET.get('productsInOrderByID')
+			#array of product IDs, parsed from list
+		arrayOfProductIDs = stringOfProductIDs.replace("[", "").replace("]","")
+		productIDsInOrder = []
+		while "'" in arrayOfProductIDs:
+			pIDinstance = find_between(arrayOfProductIDs, "'", "'")
+			productIDsInOrder.append(Product.objects.get(product_id=pIDinstance))
+			arrayOfProductIDs = arrayOfProductIDs.replace("'", "", 2);
+
+	#create A new order, add it to 
+	newOrder = Order(generateOrderID(), datetime.now(), request.GET.get('price_of_order'))
 
 
-
-	orders = Order.objects.order_by('order_date')
-	context = RequestContext(request)
-	return render_to_response('orderPlaced.html', {"thing" : thing, "stringOfProductNames": stringOfProductNames, "arrayOfProductNames": arrayOfProductNames, "orders" : orders, "numInOrder" : count}, context_instance=context)
-#
+	#I dunno if we need to update products if they've been ordered
+ 
+ 
+ 	orders = Order.objects.order_by('order_date')
+ 	context = RequestContext(request)
+	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, "numInOrder" : count}, context_instance=context)#
 # ACCOUNT VIEW (main)
 #
 
