@@ -27,14 +27,6 @@
 	<div class="grid__container">
 	
 
-<script>
-    var checked;
-    function exefunction(){
-    	checked = document.getElementById("sorted").checked;
-    	if(checked)
-      alert("BOOOOOOM");
-    }
-</script>
 
 	<h1>Browse: Test Pages
 	</h1>
@@ -43,20 +35,12 @@
 		<form>
 			<input type="text" name="q" id="id_q" value="{{ query }}"/>
 			<input type="submit" value="Search" onclick="javascript: form.action='/search/';">
-			<input type="checkbox" id="sorted" value="				Sort By Price" onclick="exefunction()"> Sort By Price <br>
+			<input type="checkbox" id="sorted" value="				Sort By Price" onclick=""> Sort By Price <br>
 
 		</form>
 	
 	</h2>
-	{% verbatim %}
-	<div ng-show="checked">
-	true
-	</div>
-	<div ng-hide="checked">
-	false
-	</div>
-	{% endverbatim %}
-    
+
     <div ng-hide="">
 		{% if results %}
 		<table style="padding: 5px; font-size:150%" id="Products">

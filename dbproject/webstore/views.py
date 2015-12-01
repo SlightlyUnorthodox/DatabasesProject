@@ -83,6 +83,16 @@ def updateOrder(request):
 
 	productName = request.GET.get('productName')
 	truthCheck = True
+	#If there's a product in the order
+	if request.GET.get('productsInOrder'):
+		#set to preexisting
+		s = request.GET.get('productsInOrder')
+		s = s.replace("'", "")
+		productsInOrder = [e.encode('utf-8') for e in s.strip('[]').split(',')];
+	else:
+		#create
+		productsInOrder = []
+
 	try:
 		productToAdd = Product.objects.get(product_name=str(productName))
 	except:
@@ -90,14 +100,14 @@ def updateOrder(request):
 	if truthCheck:
 		#if order already has a product, add this new to the cost and list of products
 		if request.GET.get('price_of_order'):
-			productsInOrder = request.GET.get('productsInOrder') #this call is incorrect
+			productsInOrder.append(str(productToAdd.product_name)) #this call is incorrect??
 			price_of_order = int(request.GET.get('price_of_order')) + productToAdd.product_price;
 			errorMessage = "Additional product added successfully"
 
 
 		#if a product with that name exists, first order
 		else:
-			productsInOrder = productToAdd
+			productsInOrder.append(str(productToAdd.product_name))
 			price_of_order = productToAdd.product_price
 			errorMessage = "Product added successfully"
 		#generate the cost based on the product, and order number
@@ -105,7 +115,6 @@ def updateOrder(request):
 		#products there, nothing to add, return same values
 		if request.GET.get('price_of_order'):
 			price_of_order = request.GET.get('price_of_order')
-			productsInOrder = request.GET.get('productsInOrder')
 			errorMessage = "No Product of name " + productName 
 		# nothing there, nothing to add
 		else: 
@@ -126,9 +135,15 @@ def placeOrder(request):
 	except KeyError:
 		return login_user(request)
 
+	count = 0
+	if request.GET.get('productsInOrder'):
+		for index in request.GET.get('productsInOrder'):
+			count = count+1
+
+
 	orders = Order.objects.order_by('order_date')
 	context = RequestContext(request)
-	return render_to_response('orderPlaced.html', {"orders" : orders}, context_instance=context)
+	return render_to_response('orderPlaced.html', {"orders" : orders, "numInOrder" : count}, context_instance=context)
 #
 # ACCOUNT VIEW (main)
 #
