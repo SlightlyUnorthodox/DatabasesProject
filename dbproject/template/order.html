@@ -36,16 +36,26 @@
 			Type your Product Name: <input type="Text" name="productName" value="{{ productName }}"/>
 			Select your Number to Order: <input type="Number" name="quantity" min="0" value="{{ quantity }}"/>
 			<input type="Submit" value="Generate Cost" onclick="javascript: form.action='/updateOrder/';">
+
+			Tracking what's in order so far
+			<input type="text" name="productsInOrder" value="{{productsInOrder}}">
+			Tracking price so far
+			<input type="text" name="price_of_order" value="{{price_of_order}}">
+
 		</form>
 	</h2>
 
 
 	{% if productsInOrder %}
-	<h2> Products In Order: {{productsInOrder}} </h2>
+	<h2> Products In Order: {{productsInOrder.product_name}} </h2>
 	<h2> Order Price: {{price_of_order}} </h2>
 
 	{% else %}
 	<h2> No products in order </h2>
+	{% endif %}
+
+	{% if errorMessage %}
+	{{errorMessage}}
 	{% endif %}
 	</div>
     

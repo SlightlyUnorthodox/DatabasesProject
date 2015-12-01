@@ -82,23 +82,40 @@ def updateOrder(request):
 		return login_user(request)
 
 	productName = request.GET.get('productName')
+	truthCheck = True
+	try:
+		productToAdd = Product.objects.get(product_name=str(productName))
+	except:
+		truthCheck = False
+	if truthCheck:
+		#if order already has a product, add this new to the cost and list of products
+		if request.GET.get('price_of_order'):
+			productsInOrder = request.GET.get('productsInOrder') #this call is incorrect
+			price_of_order = int(request.GET.get('price_of_order')) + productToAdd.product_price;
+			errorMessage = "Additional product added successfully"
 
-	productToAdd = Product.objects.get(product_name=str(productName))
 
-	#if order already has a product, add this to the cost
-	#if(request.get(productsInOrder))
-	#	productsInOrder ???
-	#	price_of_order += 
-	#else
-
-	#if a product with that name exists
-	if productToAdd:
-		productsInOrder = productToAdd.product_name
-		price_of_order = productToAdd.product_price
-	#generate the cost based on the product, and order number
+		#if a product with that name exists, first order
+		else:
+			productsInOrder = productToAdd
+			price_of_order = productToAdd.product_price
+			errorMessage = "Product added successfully"
+		#generate the cost based on the product, and order number
+	else:
+		#products there, nothing to add, return same values
+		if request.GET.get('price_of_order'):
+			price_of_order = request.GET.get('price_of_order')
+			productsInOrder = request.GET.get('productsInOrder')
+			errorMessage = "No Product of name " + productName 
+		# nothing there, nothing to add
+		else: 
+			productsInOrder = None
+			price_of_order = None
+			errorMessage = "No Products in Order"
 
 	context = RequestContext(request)
-	return render_to_response('order.html', {"productsInOrder": productsInOrder, "price_of_order" : price_of_order}, context_instance=context)
+	return render_to_response('order.html', {"errorMessage": errorMessage, "productsInOrder": productsInOrder, "price_of_order" : price_of_order}, context_instance=context)
+	
 
 #
 # Displays all orders in the system sorted by most recently placed???
