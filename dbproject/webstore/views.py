@@ -7,10 +7,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import *
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
+from django.db.models import Max
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm, AccountDeleteForm
-from datetime import datetime
+import datetime
 
 
 #
@@ -148,8 +149,6 @@ def find_between( s, first, last ):
     except ValueError:
         return ""
 
-def generateOrderID():
-	return 0;
 
 #
 # Displays all orders in the system sorted by most recently placed???
@@ -160,13 +159,12 @@ def placeOrder(request):
 	except KeyError:
 		return login_user(request)
 
-	count = 0
 	
 
-	#Need to change to match IDs
+	#Gets those products from the order
 	if request.GET.get('productsInOrderByID'):
 		stringOfProductIDs = request.GET.get('productsInOrderByID')
-			#array of product IDs, parsed from list
+		#array of products, parsed from list
 		arrayOfProductIDs = stringOfProductIDs.replace("[", "").replace("]","")
 		productIDsInOrder = []
 		while "'" in arrayOfProductIDs:
@@ -175,15 +173,25 @@ def placeOrder(request):
 			arrayOfProductIDs = arrayOfProductIDs.replace("'", "", 2);
 
 	#create A new order, add it to 
-	newOrder = Order(generateOrderID(), datetime.now(), request.GET.get('price_of_order'))
+	newOrder = Order();
+	#max + 1 of all current orders
+	dictObject = Order.objects.all().aggregate(Max('order_id'))
+	maxID = dictObject['order_id__max']
+	newOrder.order_id = int(maxID) + 1
+	newOrder.order_date = str(datetime.date.today())
+	newOrder.order_paid = request.GET.get('price_of_order')
+	newOrder.orders = User.objects.get(user_name=activeUser)
 
+
+	#add this order to the existing orders schema
+	newOrder.save()
 
 	#I dunno if we need to update products if they've been ordered
  
  
- 	orders = Order.objects.order_by('order_date')
+ 	orders = Order.objects.order_by('-order_date')
  	context = RequestContext(request)
-	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, "numInOrder" : count}, context_instance=context)#
+	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, }, context_instance=context)#
 # ACCOUNT VIEW (main)
 #
 

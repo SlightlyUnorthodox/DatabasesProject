@@ -54,7 +54,9 @@
 
 	{%if yourOrder %}
 		<h2> Here is the data on your order </h2>
-		<h3> Order ID: {{yourOrder.order_ID}}</h3>
+		<h3> Order ID: {{yourOrder.order_id}}</h3>
+		<h3> Amount paid: {{yourOrder.order_paid}}</h3>
+		<h3> yourOrder: {{yourOrder.order_date}}</h3>
 
 	{% endif %}
 	<!--a list of all orders from this store-->
