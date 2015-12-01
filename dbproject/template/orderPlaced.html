@@ -32,8 +32,23 @@
 	<h1>Orders Placed
 	</h1>
 
+	{% if thing %}
+	{{thing}}
+	{% endif %}
+	
+	{% if stringOfProductNames %}
+	<h2>{{stringOfProductNames}}</h2>
+	{% endif %}
+
+	{% if arrayOfProductNames %}
+	<h2>{{arrayOfProductNames}}</h2>
+	{% endif %}
+
+	{% if stringOfProductIDs %}
+	<h2>{{stringOfProductIDs}}</h2>
+	{% endif %}
 	{% if orders %}
-	<h2>num in order: {{numInOrder}}</h2>
+	<h2></h2>
 	<table>
 		<tr>
 			<td>Order ID</td>

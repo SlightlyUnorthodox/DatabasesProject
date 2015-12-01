@@ -122,9 +122,21 @@ def updateOrder(request):
 			price_of_order = None
 			errorMessage = "No Products in Order"
 
+	#going to need to pass and parse this too
+	productIDs = Product.objects.order_by('product_id')
+
+
+
 	context = RequestContext(request)
 	return render_to_response('order.html', {"errorMessage": errorMessage, "productsInOrder": productsInOrder, "price_of_order" : price_of_order}, context_instance=context)
-	
+
+def find_between( s, first, last ):
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        return ""
 
 #
 # Displays all orders in the system sorted by most recently placed???
@@ -136,14 +148,23 @@ def placeOrder(request):
 		return login_user(request)
 
 	count = 0
+
+	#Need to change to match IDs
 	if request.GET.get('productsInOrder'):
-		for index in request.GET.get('productsInOrder'):
-			count = count+1
+		stringOfProductNames = request.GET.get('productsInOrder')
+				#array of product names, parsed from list
+		arrayOfProductNames = stringOfProductNames.replace("[", "").replace("]","")
+		setOfProductsFromNames = []
+		while "'" in arrayOfProductNames:
+			pnameinstance = find_between(arrayOfProductNames, "'", "'")
+			thing.append(Product.objects.filter(product_name=pnameinstance))
+			arrayOfProductNames = arrayOfProductNames.replace("'", "", 2);
+
 
 
 	orders = Order.objects.order_by('order_date')
 	context = RequestContext(request)
-	return render_to_response('orderPlaced.html', {"orders" : orders, "numInOrder" : count}, context_instance=context)
+	return render_to_response('orderPlaced.html', {"thing" : thing, "stringOfProductNames": stringOfProductNames, "arrayOfProductNames": arrayOfProductNames, "orders" : orders, "numInOrder" : count}, context_instance=context)
 #
 # ACCOUNT VIEW (main)
 #
