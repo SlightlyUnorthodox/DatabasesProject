@@ -11,66 +11,121 @@
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
   	<link rel="stylesheet" type="text/css" href= "/static/css/style.css" media = "screen" />
+
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
 </head>
 
-<body class="align">
+</head>
+
+<body class="align" >
+
 
 	<div class="site__container">
 	<div class="grid__container">
 	
-	<h1>Browse: Test Pages</h1>
+
+<script>
+    var checked;
+    function exefunction(){
+    	checked = document.getElementById("sorted").checked;
+    	if(checked)
+      alert("BOOOOOOM");
+    }
+</script>
+
+	<h1>Browse: Test Pages
+	</h1>
 	</div>
 	<h2>
-		<form action="/search/">
-			<input type="text" name="q" id="id_q" value="{{ query }}" />
-			<input type="submit" value="Search" />
-		</form>
-	</h2>
-    <div class="dropdown" style="margin-bottom:10px;">
-        <button aria-expanded="false" class="btn btn-primary dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Sorting (nonfunctional)
-        <span class="caret"></span></button>
-        <ul class="dropdown-menu test" role="menu" aria-labelledby="menu1">
-          <li role="presentation"><a role="menuitem" href="">Price</a></li>
-          <li role="presentation"><a role="menuitem" href="">id</a></li>
-          <li role="presentation"><a role="menuitem" href="">whatever</a></li>
-          <li role="presentation" class="divider"></li>
-          <li role="presentation"><a role="menuitem" href="">in case we wanna use this</a></li>
-        </ul>
-	</div>
-	{% if results %}
-	<table style="padding: 5px; font-size:150%" id="Products">
-		
-		<tr style="font: bold"> 
-			<th> Product ID </th>
-			<th> Product Description </th>
-			<th> Product Price </th>
-			<th> Product Active </th>
-			<th> Product Stock Quantity </th>
-			<th> Supplys </th>
-			<th> Order </th>
-			<th> Contains </th>
-			<th> Product Name </th>
-		</tr>
-		{% for p in results %}
-		<tr >
-			
-			<td> {{ p.product_id }}</td>
-			<td> {{ p.product_description }} </td>
-			<td style="text-align: right"> $ {{ p.product_price }} </td>
-			<td> {{ p.product_active  }}</td>
-			<td> {{ p.product_stock_quantity }} </td>
-			<td> {{ p.supplys }} </td>
-			<td> {{ p.order }} </td>
-			<td> {{ p.contains }} </td>
-			<td> {{ p.product_name }} </td>
+		<form>
+			<input type="text" name="q" id="id_q" value="{{ query }}"/>
+			<input type="submit" value="Search" onclick="javascript: form.action='/search/';">
+			<input type="checkbox" id="sorted" value="				Sort By Price" onclick="exefunction()"> Sort By Price <br>
 
-		</tr>
-		{% endfor %}
-	{% endif %}
+		</form>
+	
+	</h2>
+	{% verbatim %}
+	<div ng-show="checked">
+	true
+	</div>
+	<div ng-hide="checked">
+	false
+	</div>
+	{% endverbatim %}
+    
+    <div ng-hide="">
+		{% if results %}
+		<table style="padding: 5px; font-size:150%" id="Products">
+			
+			<tr style="font: bold"> 
+				<th> Product ID </th>
+				<th> Product Description </th>
+				<th> Product Price </th>
+				<th> Product Active </th>
+				<th> Product Stock Quantity </th>
+				<th> Supplys </th>
+				<th> Order </th>
+				<th> Contains </th>
+				<th> Product Name </th>
+			</tr>
+			{% for p in results %}
+			<tr >
+				
+				<td> {{ p.product_id }}</td>
+				<td> {{ p.product_description }} </td>
+				<td style="text-align: right"> $ {{ p.product_price }} </td>
+				<td> {{ p.product_active  }}</td>
+				<td> {{ p.product_stock_quantity }} </td>
+				<td> {{ p.supplys }} </td>
+				<td> {{ p.order }} </td>
+				<td> {{ p.contains }} </td>
+				<td> {{ p.product_name }} </td>
+
+			</tr>
+			{% endfor %}
+		{% endif %}
+	</div>
+	<!--
+	<div>
+		{% if results_price_sorted %}
+		<table style="padding: 5px; font-size:150%" id="Products">
+			
+			<tr style="font: bold"> 
+				<th> Product ID </th>
+				<th> Product Description </th>
+				<th> Product Price </th>
+				<th> Product Active </th>
+				<th> Product Stock Quantity </th>
+				<th> Supplys </th>
+				<th> Order </th>
+				<th> Contains </th>
+				<th> Product Name </th>
+			</tr>
+			{% for p in results_price_sorted %}
+			<tr >
+				
+				<td> {{ p.product_id }}</td>
+				<td> {{ p.product_description }} </td>
+				<td style="text-align: right"> $ {{ p.product_price }} </td>
+				<td> {{ p.product_active  }}</td>
+				<td> {{ p.product_stock_quantity }} </td>
+				<td> {{ p.supplys }} </td>
+				<td> {{ p.order }} </td>
+				<td> {{ p.contains }} </td>
+				<td> {{ p.product_name }} </td>
+
+			</tr>
+			{% endfor %}
+		{% endif %}
+	</div>
+	-->
+		<!-- this is a working table
 
 	</table>	
-	<!-- this is a working table
 	<table style="padding: 5px; font-size:150%" id="Products" >
 		
 		<tr style="font: bold"> 

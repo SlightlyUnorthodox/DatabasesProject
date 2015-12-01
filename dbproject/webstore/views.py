@@ -50,10 +50,17 @@ def search(request):
 	if query:
 	   	results = Product.objects.order_by('product_name') # product name with str query in it
 		results = results.filter(**{'product_name__icontains': str(query)}) #query, need to put in variable
+		results_price_sorted = Product.objects.order_by('product_price') # product price
+		results_price_sorted = results_price_sorted.filter(**{'product_name__icontains': str(query)}) 
 	else:
 		results = None
+		results_price_sorted = None
 	context = RequestContext(request)
-	return render_to_response('browse.html', {"results" : results}, context_instance=context)
+	return render_to_response('browse.html', {"results" : results, "results_price_sorted": results_price_sorted}, context_instance=context)
+#
+# Search, sort by price	
+#
+
 #
 # ACCOUNT VIEW (main)
 #
