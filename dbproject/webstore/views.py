@@ -58,9 +58,47 @@ def search(request):
 	context = RequestContext(request)
 	return render_to_response('browse.html', {"results" : results, "results_price_sorted": results_price_sorted}, context_instance=context)
 #
-# Search, sort by price	
+# Order	
 #
+def order(request):
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
 
+	#going to need a list of products to choose from
+	products = Product.objects.order_by('product_name')
+
+	context = RequestContext(request)
+	return render_to_response('order.html', {"products" : products}, context_instance=context)
+
+#
+# generates Cost and displays on page	
+#
+def generateCost(request):
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+	#going to need a list of products to choose from
+
+
+	context = RequestContext(request)
+	return render_to_response('order.html', {"price_of_order" : price_of_order}, context_instance=context)
+
+#
+# Displays all orders in the system sorted by most recently placed???
+#
+def placeOrder(request):
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+	orders = Order.objects.order_by('order_date')
+	context = RequestContext(request)
+	return render_to_response('orderPlaced.html', {"orders" : orders}, context_instance=context)
 #
 # ACCOUNT VIEW (main)
 #

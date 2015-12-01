@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<!-- Author: Dax Gerts
+	Date: 18 November 2015
+	Description: Home page design for webstore -->
+<!--<img src="/static/media/blueprint_wide.jpg"/>-->
+<head>
+    <!-- Title pending for webstore name -->
+    <title>WebstoreSQL</title>           
+	
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  	<link rel="stylesheet" type="text/css" href= "/static/css/style.css" media = "screen" />
+
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+</head>
+
+</head>
+
+<body class="align" >
+
+
+	<div class="site__container">
+	<div class="grid__container">
+	
+
+
+	<h1>Order
+	</h1>
+
+	<h2>
+		<form>
+			Type your Product Name: <input type="Text" name="productName" value="{{ productName }}"/>
+			Select your Number to Order: <input type="Number" name="quantity" min="0" value="{{ quantity }}"/>
+			<input type="Submit" value="Generate Cost" onclick="javascript: form.action='/generateCost/';">
+		</form>
+	</h2>
+	</div>
+    
+	
+
+   
+    
+</body>
+</html>
