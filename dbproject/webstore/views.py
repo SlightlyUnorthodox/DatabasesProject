@@ -73,19 +73,32 @@ def order(request):
 	return render_to_response('order.html', {"products" : products}, context_instance=context)
 
 #
-# generates Cost and displays on page	
+# generates Cost and displays on page after updated with products added to order	
 #
-def generateCost(request):
+def updateOrder(request):
 	try:
 		activeUser = request.session['username']
 	except KeyError:
 		return login_user(request)
 
-	#going to need a list of products to choose from
+	productName = request.GET.get('productName')
 
+	productToAdd = Product.objects.get(product_name=str(productName))
+
+	#if order already has a product, add this to the cost
+	#if(request.get(productsInOrder))
+	#	productsInOrder ???
+	#	price_of_order += 
+	#else
+
+	#if a product with that name exists
+	if productToAdd:
+		productsInOrder = productToAdd.product_name
+		price_of_order = productToAdd.product_price
+	#generate the cost based on the product, and order number
 
 	context = RequestContext(request)
-	return render_to_response('order.html', {"price_of_order" : price_of_order}, context_instance=context)
+	return render_to_response('order.html', {"productsInOrder": productsInOrder, "price_of_order" : price_of_order}, context_instance=context)
 
 #
 # Displays all orders in the system sorted by most recently placed???
