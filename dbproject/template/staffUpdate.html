@@ -28,46 +28,40 @@
 	
 
 
-	<h1>Order:
+	<h1>Staff Update:
 	</h1>
 
 	<h2>
+		Update:
 		<form>
-			Type your Product Name: <input type="Text" name="productName" value="{{ productName }}"/>
-			Select your Number to Order (NOT WORKING): <input type="Number" name="quantity" min="0" value="{{ quantity }}"/>
-			<input type="Submit" value="Add to Order" onclick="javascript: form.action='/updateOrder/';">
+			<h3>
+			Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
+			Type Product ID To Update: <input type="Text" name="productIDtoChange" value="{{ productIDtoChange }}"/>
+			Type User ID To Update: <input type="Text" name="userIDtoChange" min="0" value="{{ userIDtoChange }}"/>
+			Type Order ID To Update: <input type="Order" name="orderIDtoChange" min="0" value="{{ orderIDtoChange }}"/>
+			<input type="Submit" value="Update" onclick="javascript: form.action='/staffUpdateItems/';">
 
-			<div style="display: none">
-				Tracking what's in order so far
-				<input type="text" name="productsInOrder" value="{{productsInOrder}}">
-				ID list
-				<input type="text" name="productsInOrderByID" value="{{productsInOrderByID}}">
-				Tracking price so far
-				<input type="text" name="price_of_order" value="{{price_of_order}}">
-			</div>
+			
 
-			<input type="Submit" value="Finalize Order" onclick="javascript: form.action='/placeOrder/';">
 		</form>
 	</h2>
-
-
-	{% if productsInOrder %}
-	<h2> Products In Order: </h2>
-	{% for p in productsInOrder %}
-		<br>{{p}} 
-	{% endfor %}
-	<h2> Order Price: {{price_of_order}} </h2>
-
-	{% else %}
-	<h2> No products in order </h2>
-	{% endif %}
-
-	{% if errorMessage %}
-	<h2>{{errorMessage}}</h2>
-	{% endif %}
-	</div>
     
-	
+	Here is a list of things you can change:
+
+	Products:
+	{% if allProducts %}
+	{% for p in allProducts %}
+	{{ p.product_id }}
+	{% endfor %}
+	{% endif %}
+	Users:
+	{% if allUsers %}
+	{{ allUsers }}
+	{% endif %}
+	Orders:
+	{% if allOrders %}
+	{{ allOrders }}
+	{% endif %}
 
    
     

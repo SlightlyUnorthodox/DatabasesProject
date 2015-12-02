@@ -12,6 +12,7 @@ from django.db.models import Max
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm, AccountDeleteForm
 import datetime
+import decimal
 
 
 #
@@ -225,6 +226,129 @@ def account(request):
 
 	state = "Please select an account action"
 	return render(request, 'account.html',{'form':form,'state':state})
+
+
+#
+# staffUpdate	
+#
+def staffUpdate(request):
+	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+	#going to need a list of products to choose from
+	allProducts = Product.objects.order_by('product_id')
+	allOrders = Order.objects.order_by('order_id')
+	allUsers = User.objects.order_by('user_id')
+
+	context = RequestContext(request)
+	return render_to_response('staffUpdate.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
+
+#
+# This is for updating current Items	
+#
+def staffUpdateItems(request):
+	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+	#going to need a list of products to choose from
+	allProducts = Product.objects.order_by('product_id')
+	allOrders = Order.objects.order_by('order_id')
+	allUsers = User.objects.order_by('user_id')
+
+	#get the items to change
+	try:
+		int(request.GET.get('productIDtoChange'))
+		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange')))
+	except ValueError:
+		productToChange = None
+	try:
+		int(request.GET.get('orderIDtoChange'))
+		orderToChange = allOrders.get(order_id=int(request.GET.get('orderIDtoChange')))
+	except ValueError:
+		orderToChange = None
+	try:
+		int(request.GET.get('userIDtoChange'))
+		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange')))
+	except ValueError:
+		userToChange = None
+
+	context = RequestContext(request)
+	return render_to_response('staffUpdateItems.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
+
+#
+# This is for saving Updates	
+#
+def staffSaveUpdates(request):
+	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+
+	#get the items to change
+	
+	if request.GET.get('productToChangeID'):
+		myID = str(request.GET.get('productToChangeID'))
+		productToChange = Product.objects.get(product_id=myID)
+		#update Product Values
+		productToChange.product_name = str(request.GET.get('productName'))
+		productToChange.product_description = str(request.GET.get('productDescription'))
+		productToChange.product_price = int(request.GET.get('productPrice'))
+		productToChange.product_active = bool(request.GET.get('productActive'))
+		productToChange.product_stock_quantity = int(request.GET.get('productStockQuantity'))
+		productToChange.product_supplies = str(request.GET.get('productSupplys'))
+		productToChange.product_order = str(request.GET.get('productOrders'))
+		productToChange.product_contains = str(request.GET.get('productContains'))
+
+		#call isn't working for some reason???
+		productToChange.save()
+
+
+	else:
+		productToChange = None
+	if request.GET.get('orderToChangeID'):
+		myID2 = str(request.GET.get('orderToChangeID'))
+		orderToChange = Order.objects.get(order_id=myID)
+
+		#update order values
+
+		#needs to be fixed
+		#orderToChange.order_paid = decimal(request.GET.get('orderPaid'))
+
+
+		#below needs to be fixed
+		#orderToChange.order_date = str(datetime.date(str(request.GET.get('orderDate'))))
+	
+		orderToChange.save()
+	else:
+		orderToChange = None
+	if request.GET.get('userToChangeID'):
+		myID3 = str(request.GET.get('userToChangeID'))
+		userToChange = User.objects.get(user_id=myID3);
+
+		#update user values
+		userToChange.user_name = str(request.GET.get('userName'))
+		userToChange.user_password = str(request.GET.get('userPassword'))
+		userToChange.user_address = str(request.GET.get('userAddress'))
+		userToChange.user_is_staff = str(request.GET.get('userIsStaff'))
+
+		userToChange.save()
+
+	else:
+		userToChange = None
+
+
+
+	context = RequestContext(request)
+	return render_to_response('staffUpdatesSaved.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange}, context_instance=context)
+
 
 #
 # ACCOUNT UPDATE VIEW
