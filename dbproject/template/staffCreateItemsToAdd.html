@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<!-- Author: Dax Gerts
+	Date: 18 November 2015
+	Description: Home page design for webstore -->
+<!--<img src="/static/media/blueprint_wide.jpg"/>-->
+<head>
+    <!-- Title pending for webstore name -->
+    <title>WebstoreSQL</title>           
+	
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  	<link rel="stylesheet" type="text/css" href= "/static/css/style.css" media = "screen" />
+
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+</head>
+
+</head>
+
+<body class="align" >
+
+
+	<div class="site__container">
+	<div class="grid__container">
+	
+
+
+	<h1>Item ADD:: NOAH NEEDS TO FINISH UPDATING THIS PAGE
+	</h1>
+
+	<h2>
+		Update:
+		<form>
+			<h3>
+			Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
+				{% if productToChange %}
+				<table style="padding: 5px; font-size:50%" id="Products">				
+				<tr style="font: bold"> 
+					<th> Product ID </th>
+					<th> Product Name </th>
+					<th> Product Description </th>
+					<th> Product Price </th>
+					<th> Product Active </th>
+					<th> Product Stock Quantity </th>
+					<th> Supplys </th>
+					<th> Order </th>
+					<th> Contains </th>
+				</tr>
+				<tr >
+					<div style="display: "><input type="Text" name="productToChangeID" value="" /></div>
+					<td> <input type="Text" name="productName" value="" /></td>
+					<td> <input type="Text" name="productDescription" value="" /></td>
+					<td> <input type="Text" name="productPrice" value="" /></td>
+					<td> <input type="Text" name="productActive" value="" /></td>
+					<td> <input type="Text" name="productStockQuantity" value="" /></td>
+					<td> <input type="Text" name="productSupplies" value="" /></td>
+					<td> <input type="Text" name="productOrder" value="" /></td>
+					<td> <input type="Text" name="productContains" value="" /></td>
+
+				</tr>
+				</table>
+			{% endif %}
+
+			{% if userToChange %}
+				<table style="padding: 5px; font-size:50%" id="Products">				
+				<tr style="font: bold"> 
+					<th> User Name</th>
+					<th> User ID </th>
+					<th> User Password </th>
+					<th> User Address</th>
+					<th> User is Staff </th>
+				</tr>
+				<tr >
+					<td> <input type="Text" name="UserName" value="" /></td>
+					<div style="display: "><input type="Text" name="userToChangeID" value="" /></div>
+					<td> <input type="Text" name="UserPassword" value="" /></td>
+					<td> <input type="Text" name="UserAddress" value="" /></td>
+					<td> <input type="Text" name="UserIsStaff" value="" /></td>
+				</tr>
+				</table>
+			{% endif %}
+
+			{% if orderToChange %}
+				<table style="padding: 5px; font-size:50%" id="Products">				
+				<tr style="font: bold"> 
+					<th> Order ID </th>
+					<th> Order Paid </th>
+					<th> Order Date</th>
+				</tr>
+				<tr >
+					<div style="display: "><input type="Text" name="orderToChangeID" value="" /></div>
+					<td> <input type="Text" name="OrderPaid" value="" /></td>
+					<td> <input type="Text" name="OrderDate" value="" /></td>
+
+				</tr>
+				</table>
+			{% endif %}
+			<input type="Submit" value="Update" onclick="javascript: form.action='/staffAddItems/';">
+
+
+			
+
+		</form>
+			<div style="display: ">
+			{% if productName %}
+			Displaying Product Name To Update: <input type="Text" name="productName" value="{{ productName }}"/>
+			{% endif %}
+			{% if userName %}
+			Displaying Username To Update: <input type="Text" name="userName" min="0" value="{{ userName }}"/>
+			{% endif %}
+			{% if orderID %}
+			Displaying Order To Update: <input type="Order" name="OrderID" min="0" value="{{ orderID }}"/>
+			{% endif %}
+			</div>
+	</h2>
+    
+	
+
+   
+    
+</body>
+</html>
+

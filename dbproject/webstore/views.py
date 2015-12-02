@@ -227,6 +227,63 @@ def account(request):
 	state = "Please select an account action"
 	return render(request, 'account.html',{'form':form,'state':state})
 
+#
+# This is for Deleting items, HAS NOT BEEN TESTED	
+#
+def staffDeleteItems(request):
+	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+	#get the items to change
+	try:
+		int(request.GET.get('productIDtoChange'))
+		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange')))
+		productToChange.delete()
+	except ValueError:
+		productToChange = None
+	try:
+		int(request.GET.get('orderIDtoChange'))
+		orderToChange = allOrders.get(order_id=int(request.GET.get('orderIDtoChange')))
+		orderToChange.delete()
+	except ValueError:
+		orderToChange = None
+	try:
+		int(request.GET.get('userIDtoChange'))
+		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange')))
+		userToChange.delete()
+	except ValueError:
+		userToChange = None
+
+
+
+	context = RequestContext(request)
+	return render_to_response('staffUpdatesSaved.html', {}, context_instance=context)
+
+#
+# This is for loading the createItemsToAdd page	
+#
+def staffCreateItemsToAdd(request):
+	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
+
+	context = RequestContext(request)
+	return render_to_response('staffCreateItemsToAdd.html', {}, context_instance=context)
+
+def staffAddItems(request):
+	#get the items to change
+	#follows same format as saveUpdate, needs to be done after saveUpdate is completed
+
+			#needs to be fixed?? 
+
+	return render_to_response('staffUpdatesSaved.html', {}, context_instance=context)
+
 
 #
 # staffUpdate	
@@ -281,6 +338,8 @@ def staffUpdateItems(request):
 	context = RequestContext(request)
 	return render_to_response('staffUpdateItems.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
+
+
 #
 # This is for saving Updates	
 #
@@ -307,6 +366,8 @@ def staffSaveUpdates(request):
 		productToChange.product_order = str(request.GET.get('productOrders'))
 		productToChange.product_contains = str(request.GET.get('productContains'))
 
+		#needs to be fixed
+
 		#call isn't working for some reason???
 		productToChange.save()
 
@@ -325,7 +386,8 @@ def staffSaveUpdates(request):
 
 		#below needs to be fixed
 		#orderToChange.order_date = str(datetime.date(str(request.GET.get('orderDate'))))
-	
+			#needs to be fixed
+
 		orderToChange.save()
 	else:
 		orderToChange = None
