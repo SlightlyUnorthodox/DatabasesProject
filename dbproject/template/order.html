@@ -38,12 +38,15 @@
 			<input type="Submit" value="Add to Order" onclick="javascript: form.action='/updateOrder/';">
 
 			<div style="display: ">
-				Tracking what's in order so far
+				Tracking what's in order so far (for dax and noah)
 				<input type="text" name="productsInOrder" value="{{productsInOrder}}">
 				ID list
 				<input type="text" name="productsInOrderByID" value="{{productsInOrderByID}}">
 				Tracking price so far
 				<input type="text" name="price_of_order" value="{{price_of_order}}">
+
+				<input type="text" name="quantity" value="{{quantity}}">
+
 			</div>
 
 			<input type="Submit" value="Finalize Order" onclick="javascript: form.action='/placeOrder/';">

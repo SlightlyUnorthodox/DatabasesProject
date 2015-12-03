@@ -35,26 +35,6 @@ class User(models.Model):
 	# i.e./ many orders to one customer
 	pass
 
-class Order(models.Model):
-	
-
-
-	order_id = models.AutoField(primary_key=True)
-	def __unicode__(self):
-		return self.order_id
-	order_date = models.DateField()
-	def __unicode__(self):
-		return self.order_date
-	order_paid = models.DecimalField(max_digits=19,decimal_places=2)
-	def __unicode__(self):
-		return self.order_paid
-	# many-to-one relationship "orders"
-	orders = models.ForeignKey(User)
-	def __unicode__(self):
-		return '%s' % (self.orders)
-	# many-to-many relationship "contains"
-	pass
-
 class Supplier(models.Model):
 	supplier_id = models.AutoField(primary_key=True)
 	def __unicode__(self):
@@ -69,14 +49,6 @@ class Supplier(models.Model):
 	pass
 
 
-# Structure for many-to-many relationship "contains"
-class Contains(models.Model):
-	quantity = models.IntegerField()
-	def __unicode__(self):
-		return self.quantity
-	products = models.ManyToManyField(Order,through='Product')
-	def __unicode__(self):
-		return '%s' % (self.products)
 
 class Product(models.Model):
 	product_id = models.AutoField(primary_key=True)	
@@ -95,12 +67,13 @@ class Product(models.Model):
 	def __unicode__(self):
 		return self.product_stock_quantity
 	# many-to-many relationship "contains"
-	orders = models.ForeignKey(Order)
-	def __unicode__(self):
-		return '%s' % (self.orders)
-	contains = models.ForeignKey(Contains)
-	def __unicode__(self):
-		return '%s' % (self.contains)
+	#product does not need to reference order, or contains
+	#orders = models.ForeignKey(Order)
+	#def __unicode__(self):
+	#	return '%s' % (self.orders)
+	#contains = models.ForeignKey(Contains)
+	#def __unicode__(self):
+	#	return '%s' % (self.contains)
 	product_name = models.CharField(max_length=50,default="Error: Bad product reference")
 	def __unicode__(self):
 		return self.product_name
@@ -108,4 +81,38 @@ class Product(models.Model):
 	supplies = models.ForeignKey(Supplier)
 	def __unicode__(self):
 		return '%s' % (self.supplies)
+	pass
+
+# Structure for many-to-many relationship "contains"
+class Contains(models.Model):
+	quantity = models.IntegerField()
+	def __unicode__(self):
+		return self.quantity
+	#one product can be in many Contains through its order (removed order bc reasons)
+	productsLONGNAME = models.ManyToManyField(Product)
+	def __unicode__(self):
+		return '%s' % (self.products)
+
+class Order(models.Model):
+	# many-to-many relationship "contains"
+	contains = models.ForeignKey(Contains)
+	def __unicode__(self):
+		return '%s' % (self.contains)
+
+
+
+	order_id = models.AutoField(primary_key=True)
+	def __unicode__(self):
+		return self.order_id
+	order_date = models.DateField()
+	def __unicode__(self):
+		return self.order_date
+	order_paid = models.DecimalField(max_digits=19,decimal_places=2)
+	def __unicode__(self):
+		return self.order_paid
+	# many-to-one relationship "orders"
+	orders = models.ForeignKey(User)
+	def __unicode__(self):
+		return '%s' % (self.orders)
+	
 	pass

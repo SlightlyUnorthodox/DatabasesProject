@@ -136,6 +136,7 @@ def updateOrder(request):
 		#if order already has a product, add this new to the cost and list of products
 		if productsInOrderByID:
 			productsInOrder.append(str(productToAdd.product_name)) 
+			quantity = int(request.GET.get('quantity')) + 1
 			productsInOrderByID.append(str(productToAdd.product_id))
 			price_of_order = int(request.GET.get('price_of_order')) + productToAdd.product_price;
 			errorMessage = "Additional product added successfully"
@@ -144,6 +145,7 @@ def updateOrder(request):
 		#if a product with that name exists, first order
 		else:
 			productsInOrder.append(str(productToAdd.product_name))
+			quantity = 1
 			productsInOrderByID.append(str(productToAdd.product_id))
 			price_of_order = productToAdd.product_price
 			errorMessage = "Product added successfully"
@@ -158,6 +160,7 @@ def updateOrder(request):
 			productsInOrder = None
 			productsInOrderByID = None
 			price_of_order = 0
+			quantity = 0
 			errorMessage = "No Products in Order"
 
 	#going to need to pass and parse this too
@@ -166,7 +169,7 @@ def updateOrder(request):
 
 
 	context = RequestContext(request)
-	return render_to_response('order.html', {"errorMessage": errorMessage, "productsInOrder": productsInOrder, "productsInOrderByID": productsInOrderByID, "price_of_order" : price_of_order}, context_instance=context)
+	return render_to_response('order.html', {"quantity": quantity, "errorMessage": errorMessage, "productsInOrder": productsInOrder, "productsInOrderByID": productsInOrderByID, "price_of_order" : price_of_order}, context_instance=context)
 
 def find_between( s, first, last ):
     try:
@@ -176,7 +179,9 @@ def find_between( s, first, last ):
     except ValueError:
         return ""
 
+def CreateProduct():
 
+	return newProduct
 #
 # Displays all orders in the system sorted by most recently placed???
 #
@@ -200,18 +205,36 @@ def placeOrder(request):
 			arrayOfProductIDs = arrayOfProductIDs.replace("'", "", 2);
 
 	#create A new order, add it to 
-	newOrder = Order();
+	newOrder = Order()
 	#max + 1 of all current orders
 	dictObject = Order.objects.all().aggregate(Max('order_id'))
 	maxID = dictObject['order_id__max']
+	if not maxID:
+		maxID = 0;
 	newOrder.order_id = int(maxID) + 1
 	newOrder.order_date = str(datetime.date.today())
 	newOrder.order_paid = request.GET.get('price_of_order')
 	newOrder.orders = User.objects.get(user_name=activeUser)
 
+	quantity = int(request.GET.get('quantity'))
 
-	#add this order to the existing orders schema
-	newOrder.save()
+	orderProduct = Product.objects.get(product_id=10)
+	
+
+	orderContains = Contains.objects.create(quantity=quantity)
+	orderContains.save()
+
+	#for all products in order
+	orderContains.productsLONGNAME.add(orderProduct)
+	newOrder.contains = orderContains
+
+	#Line that hits error
+	newOrder.save()	
+
+	#for all products in order
+	#newOrder.products.add(orderProduct)
+
+	#add this order to the existing orders schemad cb
 
 	#I dunno if we need to update products if they've been ordered
  
@@ -305,10 +328,38 @@ def staffCreateItemsToAdd(request):
 def staffAddItems(request):
 	#get the items to change
 	#follows same format as saveUpdate, needs to be done after saveUpdate is completed
+	#get the items to change
+	
+	try: 
+		productToAdd = Product()
+		productToAdd.product_id = str(request.GET.get('productToChangeID'))
+		#update Product Values
+		productToAdd.product_name = str(request.GET.get('productName'))
+		productToAdd.product_description = str(request.GET.get('productDescription'))
+		productToAdd.product_price = int(request.GET.get('productPrice'))
+		integerOneorZero = int(request.GET.get('productActive'))
+		booleanProductActive = False
+		if integerOneorZero is 1:
+			booleanProductActive = True
+		productToAdd.product_active = booleanProductActive
+		productToAdd.product_stock_quantity = int(request.GET.get('productStockQuantity'))
+		productToAdd.supplies = str(request.GET.get('productSupplys'))
 
-			#needs to be fixed?? 
 
-	return render_to_response('staffUpdatesSaved.html', {}, context_instance=context)
+		#
+		productToAdd.save()
+
+
+	except ValueError:
+		productToAdd = None
+		errorMessage = "You did not fill out all the necessary components for product"
+		return render_to_response('staffCreateItemsToAdd.html', {"errorMessage" : errorMessage}, context_instance=RequestContext(request))
+	
+
+
+	context = RequestContext(request)	
+	return render_to_response('staffUpdate.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
+
 
 
 #
@@ -344,7 +395,7 @@ def staffUpdateItems(request):
 	allOrders = Order.objects.order_by('order_id')
 	allUsers = User.objects.order_by('user_id')
 
-	#get the items to change
+	#get the Items to change
 	try:
 		int(request.GET.get('productIDtoChange'))
 		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange')))
@@ -360,6 +411,7 @@ def staffUpdateItems(request):
 		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange')))
 	except ValueError:
 		userToChange = None
+
 
 	context = RequestContext(request)
 	return render_to_response('staffUpdateItems.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
@@ -378,6 +430,8 @@ def staffSaveUpdates(request):
 
 
 	#get the items to change
+
+	#need to change to try except and add error handling like in AddItems
 	
 	if request.GET.get('productToChangeID'):
 		myID = str(request.GET.get('productToChangeID'))
@@ -386,11 +440,16 @@ def staffSaveUpdates(request):
 		productToChange.product_name = str(request.GET.get('productName'))
 		productToChange.product_description = str(request.GET.get('productDescription'))
 		productToChange.product_price = int(request.GET.get('productPrice'))
-		productToChange.product_active = bool(request.GET.get('productActive'))
+
+		integerOneorZero = int(request.GET.get('productActive'))
+		booleanProductActive = False
+		if integerOneorZero is 1:
+			booleanProductActive = True
+		productToChange.product_active = booleanProductActive
 		productToChange.product_stock_quantity = int(request.GET.get('productStockQuantity'))
-		productToChange.product_supplies = str(request.GET.get('productSupplys'))
-		productToChange.product_order = str(request.GET.get('productOrders'))
-		productToChange.product_contains = str(request.GET.get('productContains'))
+		productToChange.contains = str(request.GET.get('productContains'))
+		productToChange.orders = str(request.GET.get('productOrders'))
+		productToChange.supplies = str(request.GET.get('productSupplys'))
 
 		#needs to be fixed
 
@@ -653,3 +712,13 @@ def register_user(request):
 	#Cycle initialized form		
 	state = "Please enter registration information"
 	return render(request, 'register.html',{'form':form,'state':state})
+
+
+#### Known bug list
+#Contains relation in models.py
+	#update Order to add multiple products through a contains relations
+	#update Order in this file to add multiple of the same product to an order at once
+#Sort by price on browse page
+#general html updates
+#on delete add to models.py
+#testing adding, ordering, deleting, updating

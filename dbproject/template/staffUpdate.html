@@ -53,7 +53,7 @@
 		Add:
 		<form>
 			<h3>
-			<input type="Submit" name="Click to Add Items" onclick="javascript: form.action='/staffAddItems/';">
+			<input type="Submit" value="Click to Add Items" onclick="javascript: form.action='/staffCreateItemsToAdd/';">
 		</form>
 	</h2>
 
@@ -62,14 +62,14 @@
 	</h1>
 
 	<h2>
-		Add:
+		Delete Items:
 		<form>
 			<h3>
 			Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
 			Type Product ID To Delete: <input type="Text" name="productIDtoChange" value="{{ productIDtoChange }}"/>
 			Type User ID To Delete: <input type="Text" name="userIDtoChange" min="0" value="{{ userIDtoChange }}"/>
 			Type Order ID To Delet: <input type="Order" name="orderIDtoChange" min="0" value="{{ orderIDtoChange }}"/>
-			<input type="Submit" name="Click to Delete Items" onclick="javascript: form.action='/staffItems/';">
+			<input type="Submit" value="Click to Delete Items" onclick="javascript: form.action='/staffItems/';">
 		</form>
 	</h2>
     
