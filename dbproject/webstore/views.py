@@ -86,30 +86,56 @@ def updateOrder(request):
 		return login_user(request)
 
 	productName = request.GET.get('productName')
-	truthCheck = True
-	#If there's a product in the order
-	if request.GET.get('productsInOrder'):
-		#set to preexisting
-		s = request.GET.get('productsInOrder')
-		s = s.replace("'", "")
-		productsInOrder = [e.encode('utf-8') for e in s.strip('[]').split(',')];
-
-		s2 = request.GET.get('productsInOrderByID')
-		s2 = s2.replace("'", "")
-		productsInOrderByID = [e2.encode('utf-8') for e2 in s2.strip('[]').split(',')];
-	else:
-		#create
-		productsInOrder = []
-		productsInOrderByID = []
-
+	productExists = True
 	try:
 		productToAdd = Product.objects.get(product_name=str(productName))
 	except:
-		truthCheck = False
-	if truthCheck:
+		productExists = False
+
+	#if there's a product to add, else just return
+	if productExists:
+		#If there's a product in the order
+		if request.GET.get('productsInOrder'):
+			#set to preexisting
+			s = request.GET.get('productsInOrder')
+			s = s.replace("'", "")
+			productsInOrder = [e.encode('utf-8') for e in s.strip('[]').split(',')];
+
+			
+
+			s2 = request.GET.get('productsInOrderByID')
+			s2 = s2.replace("'", "")
+			productsInOrderByID = [e2.encode('utf-8') for e2 in s2.strip('[]').split(',')];
+
+			#bug stop for none error initial none product value
+			#not perfect, if 'None is in any product name, this will break'
+			if 'None' in str(request.GET.get('productsInOrder')):
+				productsInOrder = []
+				productsInOrderByID = []
+		else:
+			#create
+			# one will be added, create this values
+			productsInOrder = []
+			productsInOrderByID = []
+	else:
+		if not request.GET.get('productsInOrder'):
+			productsInOrder = None
+			productsInOrderByID = None
+		else:
+			#set to preexisting
+			s = request.GET.get('productsInOrder')
+			s = s.replace("'", "")
+			productsInOrder = [e.encode('utf-8') for e in s.strip('[]').split(',')];
+
+			s2 = request.GET.get('productsInOrderByID')
+			s2 = s2.replace("'", "")
+			productsInOrderByID = [e2.encode('utf-8') for e2 in s2.strip('[]').split(',')]
+	
+			
+	if productExists:
 		#if order already has a product, add this new to the cost and list of products
-		if request.GET.get('price_of_order'):
-			productsInOrder.append(str(productToAdd.product_name)) #this call is incorrect??
+		if productsInOrderByID:
+			productsInOrder.append(str(productToAdd.product_name)) 
 			productsInOrderByID.append(str(productToAdd.product_id))
 			price_of_order = int(request.GET.get('price_of_order')) + productToAdd.product_price;
 			errorMessage = "Additional product added successfully"
@@ -124,14 +150,14 @@ def updateOrder(request):
 		#generate the cost based on the product, and order number
 	else:
 		#products there, noproductIDsInOrder to add, return same values
-		if request.GET.get('price_of_order'):
+		if productsInOrderByID:
 			price_of_order = request.GET.get('price_of_order')
 			errorMessage = "No Product of name " + productName 
 		# noproductIDsInOrder there, noproductIDsInOrder to add
 		else: 
 			productsInOrder = None
 			productsInOrderByID = None
-			price_of_order = None
+			price_of_order = 0
 			errorMessage = "No Products in Order"
 
 	#going to need to pass and parse this too
