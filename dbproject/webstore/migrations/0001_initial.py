@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('order_id', models.AutoField(serialize=False, primary_key=True)),
                 ('order_date', models.DateField()),
                 ('order_paid', models.DecimalField(max_digits=19, decimal_places=2)),
-                ('contains', models.ForeignKey(to='webstore.Contains')),
+                ('contains', models.ForeignKey(blank=True, to='webstore.Contains', null=True)),
             ],
         ),
         migrations.CreateModel(

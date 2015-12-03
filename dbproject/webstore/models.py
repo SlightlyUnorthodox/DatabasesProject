@@ -91,11 +91,11 @@ class Contains(models.Model):
 	#one product can be in many Contains through its order (removed order bc reasons)
 	productsLONGNAME = models.ManyToManyField(Product)
 	def __unicode__(self):
-		return '%s' % (self.products)
+		return '%s' % (self.productsLONGNAME)
 
 class Order(models.Model):
 	# many-to-many relationship "contains"
-	contains = models.ForeignKey(Contains)
+	contains = models.ForeignKey(Contains, null=True, blank=True)
 	def __unicode__(self):
 		return '%s' % (self.contains)
 

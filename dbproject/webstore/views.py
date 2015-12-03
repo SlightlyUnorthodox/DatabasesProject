@@ -226,6 +226,7 @@ def placeOrder(request):
 
 	#for all products in order
 	orderContains.productsLONGNAME.add(orderProduct)
+	orderProduct.save()
 	newOrder.contains = orderContains
 
 	#Line that hits error
