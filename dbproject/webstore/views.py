@@ -218,27 +218,29 @@ def placeOrder(request):
 
 	quantity = int(request.GET.get('quantity'))
 
-	orderProduct = Product.objects.get(product_id=10)
+	orderProduct = Product.objects.get(product_id=1)
 	
 
 	orderContains = Contains.objects.create(quantity=quantity)
 	orderContains.save()
 
-	#for all products in order
-	orderContains.productsLONGNAME.add(orderProduct)
+	stringOfProductIDs = request.GET.get('productsInOrderByID')
+	#array of products, parsed from list
+	arrayOfProductIDs = stringOfProductIDs.replace("[", "").replace("]","")
+
+	# goes through products. It works, at least for one of them
+	#works for all but one
+	while "'" in arrayOfProductIDs:
+		pIDinstance = find_between(arrayOfProductIDs, "'", "'")
+		orderProduct = Product.objects.get(product_id=pIDinstance)
+		orderContains.productsLONGNAME.add(orderProduct)
+		arrayOfProductIDs = arrayOfProductIDs.replace("'", "", 2);
+
 	orderProduct.save()
 	newOrder.contains = orderContains
 
-	#Line that hits error
 	newOrder.save()	
 
-	#for all products in order
-	#newOrder.products.add(orderProduct)
-
-	#add this order to the existing orders schemad cb
-
-	#I dunno if we need to update products if they've been ordered
- 
  
  	orders = Order.objects.order_by('-order_date')
  	context = RequestContext(request)
