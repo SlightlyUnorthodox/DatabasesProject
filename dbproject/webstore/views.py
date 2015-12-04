@@ -57,9 +57,10 @@ def order(request):
 
 	#going to need a list of products to choose from
 	products = Product.objects.order_by('product_name')
+	quantity = 0
 
 	context = RequestContext(request)
-	return render_to_response('order.html', {"products" : products}, context_instance=context)
+	return render_to_response('order.html', {"products" : products, "quantity" : quantity}, context_instance=context)
 
 def updateOrder(request):
 	try:
@@ -100,7 +101,8 @@ def updateOrder(request):
 			productsInOrder = []
 			productsInOrderByID = []
 	else:
-		if not request.GET.get('productsInOrder'):
+		#if there's already a product in the order
+		if not int(request.GET.get('quantity')) is 0:
 			productsInOrder = None
 			productsInOrderByID = None
 		else:
@@ -116,7 +118,7 @@ def updateOrder(request):
 			
 	if productExists:
 		#if order already has a product, add this new to the cost and list of products
-		if productsInOrderByID:
+		if int(request.GET.get('quantity')) is not 0:
 			productsInOrder.append(str(productToAdd.product_name)) 
 			quantity = int(request.GET.get('quantity')) + 1
 			productsInOrderByID.append(str(productToAdd.product_id))
@@ -134,9 +136,20 @@ def updateOrder(request):
 		#generate the cost based on the product, and order number
 	else:
 		#products there, noproductIDsInOrder to add, return same values
-		if productsInOrderByID:
+		if int(request.GET.get('quantity')) is not 0:
 			price_of_order = request.GET.get('price_of_order')
+
+			quantity = int(request.GET.get('quantity'))
 			errorMessage = "No Product of name " + productName 
+
+			#set to preexisting
+			s = request.GET.get('productsInOrder')
+			s = s.replace("'", "")
+			productsInOrder = [e.encode('utf-8') for e in s.strip('[]').split(',')];
+
+			s2 = request.GET.get('productsInOrderByID')
+			s2 = s2.replace("'", "")
+			productsInOrderByID = [e2.encode('utf-8') for e2 in s2.strip('[]').split(',')]
 		# noproductIDsInOrder there, noproductIDsInOrder to add
 		else: 
 			productsInOrder = None
