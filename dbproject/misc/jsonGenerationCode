@@ -39,6 +39,7 @@
       order_date: '{{date(new Date(2015,0,1),new Date(),"YYYY-MM-dd")}}',
       order_paid: '{{floating(0,100,2)}}',
       orders: '{{integer(0,999)}}'
+      contains: '{{integer(0,999)}}'
     }
   }
 ]  

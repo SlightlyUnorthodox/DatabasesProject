@@ -14,19 +14,10 @@ from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm
 import datetime
 import decimal
 
-
-#
-# INDEX VIEW (basic html)
-#
-
 def index(request):
 	template = loader.get_template('index.html')
 	context = RequestContext(request)
 	return HttpResponse(template.render(context))
-
-#
-# BROWSE VIEW
-#
 
 def browse(request):
 
@@ -38,10 +29,6 @@ def browse(request):
 		'price_sorted_product_list': price_sorted_product_list,
 		})
 	return HttpResponse(template.render(context))
-
-#
-# Search attempt	
-#
 
 def search(request):
 	query = request.GET.get('q')
@@ -61,9 +48,7 @@ def search(request):
 		results_price_sorted = None
 	context = RequestContext(request)
 	return render_to_response('browse.html', {"results" : results, "results_price_sorted": results_price_sorted}, context_instance=context)
-#
-# Order	
-#
+
 def order(request):
 	try:
 		activeUser = request.session['username']
@@ -76,9 +61,6 @@ def order(request):
 	context = RequestContext(request)
 	return render_to_response('order.html', {"products" : products}, context_instance=context)
 
-#
-# generates Cost and displays on page after updated with products added to order	
-#
 def updateOrder(request):
 	try:
 		activeUser = request.session['username']
@@ -182,9 +164,7 @@ def find_between( s, first, last ):
 def CreateProduct():
 
 	return newProduct
-#
-# Displays all orders in the system sorted by most recently placed???
-#
+
 def placeOrder(request):
 	try:
 		activeUser = request.session['username']
@@ -243,10 +223,8 @@ def placeOrder(request):
  	orders = Order.objects.order_by('-order_date')
  	context = RequestContext(request)
 	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, }, context_instance=context)#
-# ACCOUNT VIEW (main)
-#
 
-def account(request):
+def account(request,round = 0):
 	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
@@ -262,10 +240,12 @@ def account(request):
 			action = request.POST.get('action')
 			if action == '1':
 				print("Log: Update account")
-				return accountUpdate(request)
+				render(request,"accountUpdate.html")
+				return accountUpdate(request,0)
 			if action == '2':
 				print("Log: Delete account")
-				return accountDelete(request)
+				render(request,"accountDelete.html")
+				return accountDelete(request,0)
 			if action == '3':
 				print("Log: View orders")
 				#return accountView(request)
@@ -314,9 +294,6 @@ def staffDeleteItems(request):
 	context = RequestContext(request)
 	return render_to_response('staffUpdatesSaved.html', {}, context_instance=context)
 
-#
-# This is for loading the createItemsToAdd page	
-#
 def staffCreateItemsToAdd(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
 	try:
@@ -363,11 +340,6 @@ def staffAddItems(request):
 	context = RequestContext(request)	
 	return render_to_response('staffUpdate.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
-
-
-#
-# staffUpdate	
-#
 def staffUpdate(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
 	try:
@@ -383,9 +355,6 @@ def staffUpdate(request):
 	context = RequestContext(request)
 	return render_to_response('staffUpdate.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
-#
-# This is for updating current Items	
-#
 def staffUpdateItems(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
 	try:
@@ -419,11 +388,6 @@ def staffUpdateItems(request):
 	context = RequestContext(request)
 	return render_to_response('staffUpdateItems.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
-
-
-#
-# This is for saving Updates	
-#
 def staffSaveUpdates(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
 	try:
@@ -498,20 +462,15 @@ def staffSaveUpdates(request):
 	context = RequestContext(request)
 	return render_to_response('staffUpdatesSaved.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange}, context_instance=context)
 
-
-#
-# ACCOUNT UPDATE VIEW
-#
-
-def accountUpdate(request):
+def accountUpdate(request,round):
 	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
 	except KeyError:
 		return login_user(request)
-
+	print("0")
 	#Check for POST request, if valid get action value
-	if request.method == 'POST':
+	if (request.method == 'POST') & (round > 0):
 		form = AccountUpdateForm(request.POST)
 		if form.is_valid():
 			
@@ -520,42 +479,44 @@ def accountUpdate(request):
 			newPasswordCheck = request.POST.get('repassword')
 			newAddress = request.POST.get('address')
 			newEmail = request.POST.get('email')
-
+			print("1")
 			#Load user reference
 			user = User.objects.get(user_name = activeUser)
 			print(user.user_name)
 
 			#If new email is assigned, checks for uniqueness, if not unique, report and cycle
 			if User.objects.filter(user_email = newEmail).exists() & user.user_email != newEmail:
+				print("2")
 				state = "Email already exists"
 				print("Log: email already exists")
 				return render(request, 'accountUpdate.html',{'form':form,'state':state})
 			
 			#Checks password matching, if not, report and cycle
 			if newPassword != newPasswordCheck:
+				print("3")
 				state = "Your entered password does not match. Please re-enter"
 				return render(request, 'accountUpdate.html',{'form':form,'state':state})
 
 			# Attempt to update database, check successful, if successful return to account page
-			else:
-				user.user_password = newPassword
-				user.user_email = newEmail
-				user.user_address = newAddress
-				newUser.save()
-				print("Log: new user successfully created")
-				state = "New account created. Now login!"
-				return
+			
+			print("check check check")
+			user.user_password = newPassword
+			user.user_email = newEmail
+			user.user_address = newAddress
+			newUser.save()
+			print("Log: new user successfully created")
+			state = "Account successfully updated!"
+			render(request,"account.html")
+			return accountUpdate(request,0)
 
 	#Initialize account form on first cycle
 	else:
+		print("0.25")
 		form = AccountUpdateForm()
-
+	print("1")
 	state = "Enter updated account information"
+	round = round + 1
 	return render(request, "accountUpdate.html",{'form':form,'state':state})
-
-#
-# ACCOUNT DELETE VIEW (incomplete)
-#
 
 def accountDelete(request):
 	#Require user login, if not redirect to login page
@@ -599,11 +560,6 @@ def accountDelete(request):
 	state = "Enter updated account information"
 	return render(request, "accountDelete.html",{'form':form,'state':state})
 
-#
-# LOGIN VIEW
-#
-
-#CSRF tokens not enfored in test environment
 @csrf_exempt
 def login_user(request):
 	#logout user from session
@@ -657,11 +613,6 @@ def login_user(request):
 	state = "Please enter login information"		
 	return render(request, 'auth.html',{'form':form,'state':state})
 
-#
-# REGISTRATION VIEW
-#
-
-#CSRF tokens not enforced in test environment
 @csrf_exempt
 def register_user(request):
 	#Initialize User model variables
