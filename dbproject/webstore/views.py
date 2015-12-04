@@ -217,8 +217,6 @@ def placeOrder(request):
 	newOrder.orders = User.objects.get(user_name=activeUser)
 
 	quantity = int(request.GET.get('quantity'))
-
-	orderProduct = Product.objects.get(product_id=1)
 	
 
 	orderContains = Contains.objects.create(quantity=quantity)
@@ -290,21 +288,23 @@ def staffDeleteItems(request):
 		return login_user(request)
 
 	#get the items to change
+	#product works, order works, user works
 	try:
 		int(request.GET.get('productIDtoChange'))
-		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange')))
+		productToChange = Product.objects.get(product_id=int(request.GET.get('productIDtoChange')))
 		productToChange.delete()
 	except ValueError:
 		productToChange = None
 	try:
 		int(request.GET.get('orderIDtoChange'))
-		orderToChange = allOrders.get(order_id=int(request.GET.get('orderIDtoChange')))
+		orderToChange = Order.objects.get(order_id=int(request.GET.get('orderIDtoChange')))
 		orderToChange.delete()
 	except ValueError:
 		orderToChange = None
+
 	try:
 		int(request.GET.get('userIDtoChange'))
-		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange')))
+		userToChange = User.objects.get(user_id=int(request.GET.get('userIDtoChange')))
 		userToChange.delete()
 	except ValueError:
 		userToChange = None
@@ -444,16 +444,15 @@ def staffSaveUpdates(request):
 		productToChange.product_description = str(request.GET.get('productDescription'))
 		productToChange.product_price = int(request.GET.get('productPrice'))
 
-		integerOneorZero = int(request.GET.get('productActive'))
-		booleanProductActive = False
-		if integerOneorZero is 1:
-			booleanProductActive = True
-		productToChange.product_active = booleanProductActive
+		trueOrFalse = bool(request.GET.get('productActive'))
+		productToChange.product_active = trueOrFalse
 		productToChange.product_stock_quantity = int(request.GET.get('productStockQuantity'))
 		productToChange.contains = str(request.GET.get('productContains'))
 		productToChange.orders = str(request.GET.get('productOrders'))
-		productToChange.supplies = str(request.GET.get('productSupplys'))
 
+		## so it doesn't break
+		productToChange.supplies = Supplier.objects.get(supplier_name=str(request.GET.get('productSupplies')))
+		
 		#needs to be fixed
 
 		#call isn't working for some reason???
@@ -718,9 +717,12 @@ def register_user(request):
 
 
 #### Known bug list
-#Contains relation in models.py
-	#update Order to add multiple products through a contains relations
-	#update Order in this file to add multiple of the same product to an order at once
+#Contains relation in models.py --done
+
+#update staffSaveUpdates to work for orders and users
+#update staff addITems to work
+#update staff deleteItems to work
+
 #Sort by price on browse page
 #general html updates
 #on delete add to models.py

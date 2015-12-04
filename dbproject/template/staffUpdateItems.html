@@ -45,7 +45,7 @@
 					<th> Product Price </th>
 					<th> Product Active </th>
 					<th> Product Stock Quantity </th>
-					<th> Supplys </th>
+					<th> Supplies </th>
 					<th> Order </th>
 					<th> Contains </th>
 				</tr>
@@ -57,9 +57,7 @@
 					<td> <input type="Text" name="productPrice" value="{{ productToChange.product_price }}" /></td>
 					<td> <input type="Text" name="productActive" value="{{ productToChange.product_active }}" /></td>
 					<td> <input type="Text" name="productStockQuantity" value="{{ productToChange.product_stock_quantity }}" /></td>
-					<td> <input type="Text" name="productSupplies" value="{{ productToChange.product_supplies }}" /></td>
-					<td> <input type="Text" name="productOrder" value="{{ productToChange.product_order }}" /></td>
-					<td> <input type="Text" name="productContains" value="{{ productToChange.product_contains }}" /></td>
+					<td> <input type="Text" name="productSupplies" value="{{ productToChange.product_supplies.supplier_name }}" /></td>
 
 				</tr>
 				</table>
@@ -68,16 +66,16 @@
 			{% if userToChange %}
 				<table style="padding: 5px; font-size:50%" id="Products">				
 				<tr style="font: bold"> 
-					<th> User Name</th>
 					<th> User ID </th>
+					<th> User Name</th>
 					<th> User Password </th>
 					<th> User Address</th>
 					<th> User is Staff </th>
 				</tr>
 				<tr >
 					<div style="display: none"><input type="Text" name="userToChangeID" value="{{userToChange.user_id}}" /></div>
-					<td> <input type="Text" name="UserName" value="{{ userToChange.user_name }}" /></td>
 					<td> {{ userToChange.user_id }} </td>
+					<td> <input type="Text" name="UserName" value="{{ userToChange.user_name }}" /></td>
 					<td> <input type="Text" name="UserPassword" value="{{ userToChange.user_password }}" /></td>
 					<td> <input type="Text" name="UserAddress" value="{{ userToChange.user_address }}" /></td>
 					<td> <input type="Text" name="UserIsStaff" value="{{ userToChange.user_is_staff }}" /></td>
