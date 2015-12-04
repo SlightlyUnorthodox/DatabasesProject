@@ -280,27 +280,65 @@ def staffDeleteItems(request):
 	except KeyError:
 		return login_user(request)
 
+	#going to need a list of products to choose from
+	allProducts = Product.objects.order_by('product_id')
+	allOrders = Order.objects.order_by('order_id')
+	allUsers = User.objects.order_by('user_id')
+
+	errorMessage = ''
+	error = False
+
+	one = True
+	two = True
+	three = True
 	#get the items to change
 	#product works, order works, user works
 	try:
 		int(request.GET.get('productIDtoChange'))
-		productToChange = Product.objects.get(product_id=int(request.GET.get('productIDtoChange')))
+		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange'))) 
 		productToChange.delete()
 	except ValueError:
 		productToChange = None
+		errorMessage = errorMessage + 'No such product exists to deleted;\n'
+		one = False
+	except Product.DoesNotExist:
+		errorMessage = errorMessage + 'No such product exists to deleted;\n'
+		productToChange = None
+		one = False
 	try:
 		int(request.GET.get('orderIDtoChange'))
-		orderToChange = Order.objects.get(order_id=int(request.GET.get('orderIDtoChange')))
+		orderToChange = allOrders.get(order_id=int(request.GET.get('orderIDtoChange'))) 
 		orderToChange.delete()
 	except ValueError:
-		orderToChange = None
-
+		errorMessage = errorMessage +  ' No such order exists to deleted; \n'
+		orderToChange = None	
+		two = False
+	except Order.DoesNotExist:
+		errorMessage = errorMessage +  ' No such order exists to deleted; \n'
+		orderToChange = None	
+		two = False
 	try:
 		int(request.GET.get('userIDtoChange'))
-		userToChange = User.objects.get(user_id=int(request.GET.get('userIDtoChange')))
-		userToChange.delete()
+		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange')))
+		userToChange.delete() 
 	except ValueError:
+		errorMessage = errorMessage +  ' No such user exists to deleted; \n'
 		userToChange = None
+		three = False
+	except User.DoesNotExist:
+		errorMessage = errorMessage +  ' No such user exists to deleted; \n'
+		userToChange = None	
+		three = False
+
+
+	if not one and not two and not three:
+		error = True
+	else:
+		errorMessage = ''
+	if error:
+		return render_to_response('staffUpdate.html', {"errorMessage" : errorMessage, "allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
+
+
 
 
 
@@ -323,35 +361,160 @@ def staffAddItems(request):
 	#follows same format as saveUpdate, needs to be done after saveUpdate is completed
 	#get the items to change
 	
-	try: 
-		productToAdd = Product()
-		productToAdd.product_id = str(request.GET.get('productToChangeID'))
+	#get the items to change
+
+	#here in case we reload the page
+	allProducts = Product.objects.order_by('product_id')
+	allOrders = Order.objects.order_by('order_id')
+	allUsers = User.objects.order_by('user_id')
+
+	errorMessage = ""
+
+
+	#all 3 have to be checked first for response error handling
+	if request.GET.get('productToChangeID'):
+		myID = str(request.GET.get('productToChangeID'))
+		productToChange = Product()
+		try:
+			Product.objects.get(product_id=myID)
+			errorMessage = errorMessage + "Product ID already exists"
+		except Product.DoesNotExist:
+			productToChange.product_id = myID
+
+	else:
+		productToChange = None
+	if request.GET.get('userToChangeID'):
+		myID2 = str(request.GET.get('userToChangeID'))
+		userToChange = User()
+		try:
+			User.objects.get(user_id=myID2)
+			errorMessage = errorMessage + "User ID already exists"
+		except User.DoesNotExist:
+			userToChange.user_id = myID2
+	else:
+		userToChange = None
+	if request.GET.get('orderToChangeID'):
+		orderToChange = Order()
+		myID3 = str(request.GET.get('orderToChangeID'))
+		try:
+			Order.objects.get(order_id=myID3)
+			errorMessage = errorMessage + "Order ID already exists"
+		except Order.DoesNotExist:
+			orderToChange.order_id = myID3
+	else:
+		orderToChange = None
+
+
+	#updates and error handling
+	if request.GET.get('productToChangeID'):
 		#update Product Values
-		productToAdd.product_name = str(request.GET.get('productName'))
-		productToAdd.product_description = str(request.GET.get('productDescription'))
-		productToAdd.product_price = int(request.GET.get('productPrice'))
-		integerOneorZero = int(request.GET.get('productActive'))
-		booleanProductActive = False
-		if integerOneorZero is 1:
-			booleanProductActive = True
-		productToAdd.product_active = booleanProductActive
-		productToAdd.product_stock_quantity = int(request.GET.get('productStockQuantity'))
-		productToAdd.supplies = str(request.GET.get('productSupplys'))
+		try:
+			productToChange.product_name = str(request.GET.get('productName'))
+			if productToChange.product_name is '': #cant be null
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Name" + ";" 
+
+		try:
+			productToChange.product_description = str(request.GET.get('productDescription'))
+			if productToChange.product_description is '': #cant be null
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product productDescription" + "; " 
+
+		try:
+			productToChange.product_price = int(request.GET.get('productPrice'))
+			if productToChange.product_price < 0: #cant be negative
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Price" + "; " 
+
+		try:
+			productToChange.product_active = bool(request.GET.get('productActive'))
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Active" + "; " 
+
+		try:
+			productToChange.product_stock_quantity = int(request.GET.get('productStockQuantity'))
+			if productToChange.product_stock_quantity < 0: #cant be negative
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Stock quantity" + "; " 
+
+		## so it doesn't break
+		try:
+			productToChange.supplies = Supplier.objects.get(supplier_id=int(request.GET.get('productSupplies')))
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Supplier ID" + "; " 
+		except Supplier.DoesNotExist:
+			errorMessage = errorMessage + "Invalid Product Supplier ID" + "; " 
+
+		
+		#if error exists
+		if errorMessage is not "":
+			return render_to_response('staffCreateItemsToAdd.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
+		#call isn't working for some reason???
+		productToChange.save()
+
+	else:
+		productToChange = None
+	if request.GET.get('orderToChangeID'):
+
+		#update order values
+
+		#needs to be fixed
+		#orderToChange.order_paid = decimal(request.GET.get('orderPaid'))
 
 
-		#
-		productToAdd.save()
+		#below needs to be fixed
+		#orderToChange.order_date = str(datetime.date(str(request.GET.get('orderDate'))))
+			#needs to be fixed
+		orderToChange.save()
+	else:
+		orderToChange = None
+	if request.GET.get('userToChangeID'):
+		#update user values
+		try:
+			userToChange.user_name = str(request.GET.get('UserName'))
+			if userToChange.user_name is '': #cant be null
+				raise ValueError('')
+			if len(userToChange.user_name) < 8:
+				raise ValueError('NO')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid username;"
+		try:
+			userToChange.user_password = str(request.GET.get('UserPassword'))
+			if userToChange.user_password is '': #cant be null
+				raise ValueError('')
+			if len(userToChange.user_password) < 8:
+				raise ValueError('NO')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid password;"
+		try:
+			userToChange.user_address = str(request.GET.get('UserAddress'))
+			if userToChange.user_address is '':
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Address"
+		try:
+			userToChange.user_is_staff = bool(request.GET.get('UserIsStaff'))
+		except ValueError:
+			errorMessage = errorMessage + 'Invalid Staff'
 
+		if errorMessage is not "":
+			return render_to_response('staffCreateItemsToAdd.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
 
-	except ValueError:
-		productToAdd = None
-		errorMessage = "You did not fill out all the necessary components for product"
-		return render_to_response('staffCreateItemsToAdd.html', {"errorMessage" : errorMessage}, context_instance=RequestContext(request))
+		userToChange.save()
+	else:
+		userToChange = None
+
 	
-
+	if not userToChange and not productToChange and not orderToChange:
+		errorMessage = 'Nothing to add input'
+		return render_to_response('staffCreateItemsToAdd.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
 
 	context = RequestContext(request)	
-	return render_to_response('staffUpdate.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
+	return render_to_response('browse.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
 def staffUpdate(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
@@ -365,8 +528,10 @@ def staffUpdate(request):
 	allOrders = Order.objects.order_by('order_id')
 	allUsers = User.objects.order_by('user_id')
 
+	errorMessage = None 
+
 	context = RequestContext(request)
-	return render_to_response('staffUpdate.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
+	return render_to_response('staffUpdate.html', {"errorMessage" : errorMessage, "allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
 
 def staffUpdateItems(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
@@ -379,27 +544,51 @@ def staffUpdateItems(request):
 	allProducts = Product.objects.order_by('product_id')
 	allOrders = Order.objects.order_by('order_id')
 	allUsers = User.objects.order_by('user_id')
-
-	#get the Items to change
+	errorMessage = ''
+	error = False
+	#get the items to change
+	#product works, order works, user works
 	try:
 		int(request.GET.get('productIDtoChange'))
-		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange')))
+		productToChange = allProducts.get(product_id=int(request.GET.get('productIDtoChange'))) 
 	except ValueError:
 		productToChange = None
+		errorMessage = errorMessage + 'No such product exists to changed;\n'
+	except Product.DoesNotExist:
+		errorMessage = errorMessage + 'No such product exists to changed;\n'
+		productToChange = None
+
 	try:
 		int(request.GET.get('orderIDtoChange'))
-		orderToChange = allOrders.get(order_id=int(request.GET.get('orderIDtoChange')))
+		orderToChange = allOrders.get(order_id=int(request.GET.get('orderIDtoChange'))) 
 	except ValueError:
-		orderToChange = None
+		errorMessage = errorMessage +  ' No such order exists to changed; \n'
+		orderToChange = None	
+	except Order.DoesNotExist:
+		errorMessage = errorMessage +  ' No such order exists to changed; \n'
+		orderToChange = None	
 	try:
 		int(request.GET.get('userIDtoChange'))
-		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange')))
+		userToChange = allUsers.get(user_id=int(request.GET.get('userIDtoChange'))) 
 	except ValueError:
+		errorMessage = errorMessage +  ' No such user exists to changed; \n'
 		userToChange = None
+	except User.DoesNotExist:
+		errorMessage = errorMessage +  ' No such user exists to changed; \n'
+		userToChange = None	
+
+
+	if not userToChange and not productToChange and not orderToChange:
+		error = True
+	else:
+		errorMessage = ''
+	if error:
+		return render_to_response('staffUpdate.html', {"errorMessage" : errorMessage, "allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
+
 
 
 	context = RequestContext(request)
-	return render_to_response('staffUpdateItems.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
+	return render_to_response('staffUpdateItems.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
 def staffSaveUpdates(request):
 	####!!!!!!!!!!!!!!  Change below to require staff not just user
@@ -408,30 +597,84 @@ def staffSaveUpdates(request):
 	except KeyError:
 		return login_user(request)
 
-
+	#if the user is not staff
+	#if User(activeUser).user_is_staff is False:
+	#	return render_to_response('notStaff.html', context_instance=RequestContext(request))
+	
 	#get the items to change
 
-	#need to change to try except and add error handling like in AddItems
-	
+	#here in case we reload the page
+	allProducts = Product.objects.order_by('product_id')
+	allOrders = Order.objects.order_by('order_id')
+	allUsers = User.objects.order_by('user_id')
+
+	#all 3 have to be checked first for response error handling
 	if request.GET.get('productToChangeID'):
 		myID = str(request.GET.get('productToChangeID'))
 		productToChange = Product.objects.get(product_id=myID)
-		#update Product Values
-		productToChange.product_name = str(request.GET.get('productName'))
-		productToChange.product_description = str(request.GET.get('productDescription'))
-		productToChange.product_price = int(request.GET.get('productPrice'))
+	else:
+		productToChange = None
+	if request.GET.get('userToChangeID'):
+		myID2 = str(request.GET.get('userToChangeID'))
+		userToChange = User.objects.get(user_id=myID2)
+	else:
+		userToChange = None
+	if request.GET.get('orderToChangeID'):
+		myID3 = str(request.GET.get('orderToChangeID'))
+		orderToChange = Order.objects.get(order_id=myID3)
+	else:
+		orderToChange = None
 
-		trueOrFalse = bool(request.GET.get('productActive'))
-		productToChange.product_active = trueOrFalse
-		productToChange.product_stock_quantity = int(request.GET.get('productStockQuantity'))
-		productToChange.contains = str(request.GET.get('productContains'))
-		productToChange.orders = str(request.GET.get('productOrders'))
+	errorMessage = ""
+
+	#updates and error handling
+	if request.GET.get('productToChangeID'):
+		#update Product Values
+		try:
+			productToChange.product_name = str(request.GET.get('productName'))
+			if productToChange.product_name is '': #cant be null
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Name" + ";" 
+
+		try:
+			productToChange.product_description = str(request.GET.get('productDescription'))
+			if productToChange.product_description is '': #cant be null
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product productDescription" + "; " 
+
+		try:
+			productToChange.product_price = int(request.GET.get('productPrice'))
+			if productToChange.product_price < 0: #cant be negative
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Price" + "; " 
+
+		try:
+			productToChange.product_active = bool(request.GET.get('productActive'))
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Active" + "; " 
+
+		try:
+			productToChange.product_stock_quantity = int(request.GET.get('productStockQuantity'))
+			if productToChange.product_stock_quantity < 0: #cant be negative
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Stock quantity" + "; " 
 
 		## so it doesn't break
-		productToChange.supplies = Supplier.objects.get(supplier_name=str(request.GET.get('productSupplies')))
-		
-		#needs to be fixed
+		try:
+			productToChange.supplies = Supplier.objects.get(supplier_id=int(request.GET.get('productSupplies')))
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Product Supplier ID" + "; " 
+		except Supplier.DoesNotExist:
+			errorMessage = errorMessage + "Invalid Product Supplier ID" + "; " 
 
+		
+		#if error exists
+		if errorMessage is not "":
+			return render_to_response('staffUpdateItems.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
 		#call isn't working for some reason???
 		productToChange.save()
 
@@ -460,10 +703,35 @@ def staffSaveUpdates(request):
 		userToChange = User.objects.get(user_id=myID3);
 
 		#update user values
-		userToChange.user_name = str(request.GET.get('userName'))
-		userToChange.user_password = str(request.GET.get('userPassword'))
-		userToChange.user_address = str(request.GET.get('userAddress'))
-		userToChange.user_is_staff = str(request.GET.get('userIsStaff'))
+		try:
+			userToChange.user_name = str(request.GET.get('UserName'))
+			if userToChange.user_name is '': #cant be null
+				raise ValueError('')
+			if len(userToChange.user_name) < 8:
+				raise ValueError('NO')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid username;"
+		try:
+			userToChange.user_password = str(request.GET.get('UserPassword'))
+			if userToChange.user_password is '': #cant be null
+				raise ValueError('')
+			if len(userToChange.user_password) < 8:
+				raise ValueError('NO')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid password;"
+		try:
+			userToChange.user_address = str(request.GET.get('UserAddress'))
+			if userToChange.user_address is '':
+				raise ValueError('')
+		except ValueError:
+			errorMessage = errorMessage + "Invalid Address"
+		try:
+			userToChange.user_is_staff = bool(request.GET.get('UserIsStaff'))
+		except ValueError:
+			errorMessage = errorMessage + 'Invalid Staff'
+
+		if errorMessage is not "":
+			return render_to_response('staffUpdateItems.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
 
 		userToChange.save()
 

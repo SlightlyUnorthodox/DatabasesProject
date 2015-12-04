@@ -48,27 +48,23 @@
 			
 			<tr style="font: bold"> 
 				<th> Product ID </th>
+				<th> Product Name </th>
 				<th> Product Description </th>
 				<th> Product Price </th>
 				<th> Product Active </th>
 				<th> Product Stock Quantity </th>
 				<th> Supplies </th>
-				<th> Order </th>
-				<th> Contains </th>
-				<th> Product Name </th>
 			</tr>
 			{% for p in results %}
 			<tr >
 				
 				<td> {{ p.product_id }}</td>
+				<td> {{ p.product_name }} </td>
 				<td> {{ p.product_description }} </td>
 				<td style="text-align: right"> $ {{ p.product_price }} </td>
 				<td> {{ p.product_active  }}</td>
 				<td> {{ p.product_stock_quantity }} </td>
 				<td> {{ p.supplies }} </td>
-				<td> {{ p.orders }} </td>
-				<td> {{ p.contains }} </td>
-				<td> {{ p.product_name }} </td>
 
 			</tr>
 			{% endfor %}

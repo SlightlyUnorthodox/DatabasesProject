@@ -28,15 +28,13 @@
 	
 
 
-	<h1>Item ADD:: NOAH NEEDS TO FINISH UPDATING THIS PAGE
+	<h1>Item ADD:: 
 	</h1>
-
 	{% if errorMessage %}
 		<h1 style="color: red"> {{errorMessage}} </h1>
 	{% endif %}
-
 	<h2>
-		Update:
+		Add:
 		<form>
 			<h3>
 			Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
@@ -46,40 +44,36 @@
 					<th> Product Name </th>
 					<th> Product Description </th>
 					<th> Product Price </th>
-					<th> Product Active (1 for active, 0 for inactive) </th>
+					<th> Product Active </th>
 					<th> Product Stock Quantity </th>
-					<th> Supplies </th>
-					<th> Order </th>
-					<th> Contains </th>
+					<th> Supplier ID </th>
 				</tr>
 				<tr >
-					<td><div style="display: "><input type="Text" name="productToChangeID" value="" /></div></td>
-					<td> <input type="Text" name="productName" value="" /></td>
-					<td> <input type="Text" name="productDescription" value="" /></td>
-					<td> <input type="Text" name="productPrice" value="" /></td>
-					<td> <input type="Text" name="productActive" value="" /></td>
-					<td> <input type="Text" name="productStockQuantity" value="" /></td>
-					<td> <input type="Text" name="productSupplies" value="" /></td>
-					<td> <input type="Text" name="productOrder" value="" /></td>
-					<td> <input type="Text" name="productContains" value="" /></td>
+					<td> <input type="Text" name="productToChangeID" value="{{productToChange.product_id}}" /></td>
+					<td> <input type="Text" name="productName" value="{{ productToChange.product_name }}" /></td>
+					<td> <input type="Text" name="productDescription" value="{{ productToChange.product_description }}" /></td>
+					<td> <input type="Text" name="productPrice" value="{{ productToChange.product_price }}" /></td>
+					<td> <input type="Text" name="productActive" value="{{ productToChange.product_active }}" /></td>
+					<td> <input type="Text" name="productStockQuantity" value="{{ productToChange.product_stock_quantity }}" /></td>
+					<td> <input type="Text" name="productSupplies" value="{{ productToChange.supplies.supplier_id }}" /></td>
 
 				</tr>
 				</table>
 
 				<table style="padding: 5px; font-size:50%" id="Products">				
 				<tr style="font: bold"> 
-					<th> User ID </th>					
+					<th> User ID </th>
 					<th> User Name</th>
 					<th> User Password </th>
 					<th> User Address</th>
 					<th> User is Staff </th>
 				</tr>
 				<tr >
-					<td><div style="display: "><input type="Text" name="userToChangeID" value="" /></div></td>					
-					<td> <input type="Text" name="UserName" value="" /></td>
-					<td> <input type="Text" name="UserPassword" value="" /></td>
-					<td> <input type="Text" name="UserAddress" value="" /></td>
-					<td> <input type="Text" name="UserIsStaff" value="" /></td>
+					<td> <input type="Text" name="userToChangeID" value="{{userToChange.user_id}}" /></td>
+					<td> <input type="Text" name="UserName" value="{{ userToChange.user_name }}" /></td>
+					<td> <input type="Text" name="UserPassword" value="{{ userToChange.user_password }}" /></td>
+					<td> <input type="Text" name="UserAddress" value="{{ userToChange.user_address }}" /></td>
+					<td> <input type="Text" name="UserIsStaff" value="{{ userToChange.user_is_staff }}" /></td>
 				</tr>
 				</table>
 
@@ -90,13 +84,13 @@
 					<th> Order Date</th>
 				</tr>
 				<tr >
-					<td><div style="display: "><input type="Text" name="orderToChangeID" value="" /></div></td>
-					<td> <input type="Text" name="OrderPaid" value="" /></td>
-					<td> <input type="Text" name="OrderDate" value="" /></td>
+					<td> <input type="Text" name="orderToChangeID" value="{{orderToChange.order_id}}" /></td>
+					<td> <input type="Text" name="OrderPaid" value="{{ orderToChange.order_paid }}" /></td>
+					<td> <input type="Text" name="OrderDate" value="{{ orderToChange.order_date }}" /></td>
 
 				</tr>
 				</table>
-			<input type="Submit" value="Update" onclick="javascript: form.action='/staffAddItems/';">
+			<input type="Submit" value="Add Items" onclick="javascript: form.action='/staffAddItems/';">
 
 
 			

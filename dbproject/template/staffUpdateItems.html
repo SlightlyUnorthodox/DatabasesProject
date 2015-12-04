@@ -30,7 +30,9 @@
 
 	<h1>Staff Update:
 	</h1>
-
+	{% if errorMessage %}
+		<h1 style="color: red"> {{errorMessage}} </h1>
+	{% endif %}
 	<h2>
 		Update:
 		<form>
@@ -45,9 +47,7 @@
 					<th> Product Price </th>
 					<th> Product Active </th>
 					<th> Product Stock Quantity </th>
-					<th> Supplies </th>
-					<th> Order </th>
-					<th> Contains </th>
+					<th> Supplier ID </th>
 				</tr>
 				<tr >
 					<div style="display: none"><input type="Text" name="productToChangeID" value="{{productToChange.product_id}}" /></div>
@@ -57,7 +57,7 @@
 					<td> <input type="Text" name="productPrice" value="{{ productToChange.product_price }}" /></td>
 					<td> <input type="Text" name="productActive" value="{{ productToChange.product_active }}" /></td>
 					<td> <input type="Text" name="productStockQuantity" value="{{ productToChange.product_stock_quantity }}" /></td>
-					<td> <input type="Text" name="productSupplies" value="{{ productToChange.product_supplies.supplier_name }}" /></td>
+					<td> <input type="Text" name="productSupplies" value="{{ productToChange.supplies.supplier_id }}" /></td>
 
 				</tr>
 				</table>

@@ -31,6 +31,10 @@
 	<h1>Staff Update:
 	</h1>
 
+	{% if errorMessage %}
+	<h1 style="color: red"> {{errorMessage}} </h1>
+	{% endif %}
+
 	<h2>
 		Update:
 		<form>
@@ -68,7 +72,7 @@
 			Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
 			Type Product ID To Delete: <input type="Text" name="productIDtoChange" value="{{ productIDtoChange }}"/>
 			Type User ID To Delete: <input type="Text" name="userIDtoChange" min="0" value="{{ userIDtoChange }}"/>
-			Type Order ID To Delet: <input type="Order" name="orderIDtoChange" min="0" value="{{ orderIDtoChange }}"/>
+			Type Order ID To Delete: <input type="Order" name="orderIDtoChange" min="0" value="{{ orderIDtoChange }}"/>
 			<input type="Submit" value="Click to Delete Items" onclick="javascript: form.action='/staffDeleteItems/';">
 		</form>
 	</h2>
