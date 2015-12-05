@@ -274,9 +274,12 @@ def account(request,round = 0):
 # This is for Deleting items, HAS NOT BEEN TESTED	
 #
 def staffDeleteItems(request):
-	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	# Require staff member to be logged in
 	try:
 		activeUser = request.session['username']
+		activeStaff = request.session['staff']
+		if activeStaff == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -346,9 +349,12 @@ def staffDeleteItems(request):
 	return render_to_response('staffUpdatesSaved.html', {}, context_instance=context)
 
 def staffCreateItemsToAdd(request):
-	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	# Require staff member to be logged in
 	try:
 		activeUser = request.session['username']
+		activeStaff = request.session['staff']
+		if activeStaff == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -357,6 +363,15 @@ def staffCreateItemsToAdd(request):
 	return render_to_response('staffCreateItemsToAdd.html', {}, context_instance=context)
 
 def staffAddItems(request):
+	# Require staff member to be logged in
+	try:
+		activeUser = request.session['username']
+		activeStaff = request.session['staff']
+		if activeStaff == False:
+			return login_user(request)
+	except KeyError:
+		return login_user(request)
+	
 	#get the items to change
 	#follows same format as saveUpdate, needs to be done after saveUpdate is completed
 	#get the items to change
@@ -517,9 +532,12 @@ def staffAddItems(request):
 	return render_to_response('browse.html', {"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
 def staffUpdate(request):
-	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	# Require staff member to be logged in
 	try:
 		activeUser = request.session['username']
+		activeStaff = request.session['staff']
+		if activeStaff == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -534,9 +552,12 @@ def staffUpdate(request):
 	return render_to_response('staffUpdate.html', {"errorMessage" : errorMessage, "allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=RequestContext(request))
 
 def staffUpdateItems(request):
-	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	# Require staff member to be logged in
 	try:
 		activeUser = request.session['username']
+		activeStaff = request.session['staff']
+		if activeStaff == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -591,9 +612,12 @@ def staffUpdateItems(request):
 	return render_to_response('staffUpdateItems.html', {"errorMessage" : errorMessage, "productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange,"allProducts" : allProducts, "allOrders" : allOrders, "allUsers" : allUsers}, context_instance=context)
 
 def staffSaveUpdates(request):
-	####!!!!!!!!!!!!!!  Change below to require staff not just user
+	# Require staff member to be logged in
 	try:
 		activeUser = request.session['username']
+		activeStaff = request.session['staff']
+		if activeStaff == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -870,6 +894,7 @@ def login_user(request):
 				if user.user_password == password:
 					print("Log: successfully logged in")
 					state = "You've logged in!"
+					request.session['staff'] = user.user_is_staff
 					request.session['username'] = user.user_name
 					HttpResponseRedirect('index.html')
 					return render(request, 'index.html')
