@@ -21,7 +21,7 @@ body {
 }
 
 a {
-  color: #F27927;
+  color: #00AA55;
   outline: 0;
   text-decoration: none;
 }
@@ -85,6 +85,7 @@ input {
 .form--login input[type="submit"]:focus, .form--login input[type="submit"]:hover {
   background-color: #00AA55;
 }
+
 .form__field {
   display: -webkit-box;
   display: -webkit-flex;

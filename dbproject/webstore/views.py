@@ -760,44 +760,43 @@ def accountUpdate(request):
 	except KeyError:
 		return login_user(request)
 	
+	#initialize local reference variables
+	newPasswordCheck = newPassword = newAddress = newEmail = ""
+
 	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
+		print("hm?")
 		if form.is_valid():
-			
+			print("yo yo yo")
 			#Adssign update attributes
 			newPassword = request.POST.get('password')
 			newPasswordCheck = request.POST.get('repassword')
 			newAddress = request.POST.get('address')
 			newEmail = request.POST.get('email')
-			print("1")
+			
 			#Load user reference
 			user = User.objects.get(user_name = activeUser)
-			print(user.user_name)
-			print("1")
+			
 			#If new email is assigned, checks for uniqueness, if not unique, report and cycle
-			if User.objects.filter(user_email = newEmail).exists() & user.user_email != newEmail:
-				print("2")
+			if User.objects.filter(user_email = newEmail).exists() and user.user_email != newEmail:
 				state = "Email already exists"
 				print("Log: email already exists")
 				return render(request, 'accountUpdate.html',{'form':form,'state':state})
 			
 			#Checks password matching, if not, report and cycle
 			if newPassword != newPasswordCheck:
-				print("3")
 				state = "Your entered password does not match. Please re-enter"
 				return render(request, 'accountUpdate.html',{'form':form,'state':state})
 
 			# Attempt to update database, check successful, if successful return to account page
-			
-			print("check check check")
 			user.user_password = newPassword
 			user.user_email = newEmail
 			user.user_address = newAddress
-			newUser.save()
+			user.save()
 			print("Log: new user successfully created")
 			state = "Account successfully updated!"
-			return render(request,'accountUpdate.htm',{'form':form,'state':state})
+			return render(request,'accountUpdate.html',{'form':form,'state':state})
 
 	#Initialize account form on first cycle
 	else:
@@ -971,7 +970,5 @@ def register_user(request):
 #update staff addITems to work
 #update staff deleteItems to work
 
-#Sort by price on browse page
-#general html updates
 #on delete add to models.py
 #testing adding, ordering, deleting, updating
