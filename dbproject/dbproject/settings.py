@@ -55,6 +55,14 @@ ROOT_URLCONF = 'dbproject.urls'
 
 WSGI_APPLICATION = 'dbproject.wsgi.application'
 
+# Email configuration
+#EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'Iamcule!2'
+EMAIL_HOST_USER = 'gerts.dax1@gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

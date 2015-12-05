@@ -9,6 +9,7 @@ from django.views.decorators.csrf import *
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
 from django.db.models import Max
+from django.core.mail import EmailMessage
 #import necessary models
 from .models import User, Order, Supplier, Contains, Product
 from .forms import LoginForm, RegisterForm, AccountActionForm, AccountUpdateForm, AccountDeleteForm
@@ -239,6 +240,12 @@ def placeOrder(request):
 		if quantity > productCount:
 			print("Log: Error: no overselling allowed")
 			state ="Insufficient product stock, please wait for staff to restock"
+			email = EmailMessage(
+				'Webstore: Product stock low',
+				(str(orderProduct.product_name) + "stock count is low, please restock"),
+				to = [str(request.session['email'])]
+			)
+			email.send()
 			return render(request,"order.html",{"state":state})
 		elif productCount < 10:
 			# Send severe warning to staff 
@@ -898,6 +905,7 @@ def login_user(request):
 	try:
 		del request.session['username']
 		del request.session['staff']
+		del request.session['email']
 	except KeyError:
 		pass
 
@@ -924,6 +932,7 @@ def login_user(request):
 					state = "You've logged in!"
 					request.session['staff'] = user.user_is_staff
 					request.session['username'] = user.user_name
+					request.session['email'] = user.user_email
 					HttpResponseRedirect('index.html')
 					return render(request, 'index.html')
 				else:
