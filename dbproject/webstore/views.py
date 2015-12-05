@@ -245,39 +245,6 @@ def placeOrder(request):
  	context = RequestContext(request)
 	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, }, context_instance=context)#
 
-def account(request,round = 0):
-	#Require user login, if not redirect to login page
-	try:
-		activeUser = request.session['username']
-	except KeyError:
-		return login_user(request)
-
-	#Check for POST request, if valid get action value
-	if request.method == 'POST':
-		form = AccountActionForm(request.POST)
-		if form.is_valid():
-
-			#Action value dictates which account page is rendered
-			action = request.POST.get('action')
-			if action == '1':
-				print("Log: Update account")
-				render(request,"accountUpdate.html")
-				return accountUpdate(request,0)
-			if action == '2':
-				print("Log: Delete account")
-				render(request,"accountDelete.html")
-				return accountDelete(request,0)
-			if action == '3':
-				print("Log: View orders")
-				#return accountView(request)
-	
-	#Initialize account form on first cycle
-	else:
-		form = AccountActionForm()
-
-	state = "Please select an account action"
-	return render(request, 'account.html',{'form':form,'state':state})
-
 #
 # This is for Deleting items, HAS NOT BEEN TESTED	
 #
@@ -775,15 +742,26 @@ def staffSaveUpdates(request):
 	context = RequestContext(request)
 	return render_to_response('staffUpdatesSaved.html', {"productToChange" : productToChange, "userToChange" : userToChange, "orderToChange" : orderToChange}, context_instance=context)
 
-def accountUpdate(request,round):
+def account(request,round = 0):
 	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
 	except KeyError:
 		return login_user(request)
-	print("0")
+
+	template = loader.get_template('account.html')
+	context = RequestContext(request)
+	return HttpResponse(template.render(context))
+
+def accountUpdate(request):
+	#Require user login, if not redirect to login page
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+
 	#Check for POST request, if valid get action value
-	if (request.method == 'POST') & (round > 0):
+	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
 		if form.is_valid():
 			
@@ -796,7 +774,7 @@ def accountUpdate(request,round):
 			#Load user reference
 			user = User.objects.get(user_name = activeUser)
 			print(user.user_name)
-
+			print("1")
 			#If new email is assigned, checks for uniqueness, if not unique, report and cycle
 			if User.objects.filter(user_email = newEmail).exists() & user.user_email != newEmail:
 				print("2")
@@ -828,9 +806,7 @@ def accountUpdate(request,round):
 		form = AccountUpdateForm()
 	print("1")
 	state = "Enter updated account information"
-	round = round + 1
-	return render(request, "accountUpdate.html",{'form':form,'state':state})
-
+	return render(request, "accountUpdate.html",{form:"form",state:"state"})
 def accountDelete(request):
 	#Require user login, if not redirect to login page
 	try:
@@ -872,6 +848,15 @@ def accountDelete(request):
 
 	state = "Enter updated account information"
 	return render(request, "accountDelete.html",{'form':form,'state':state})
+
+def accountOrders(request):
+	try:
+		activeUser = request.session['username']
+	except KeyError:
+		return login_user(request)
+	
+
+
 
 @csrf_exempt
 def login_user(request):

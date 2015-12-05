@@ -14,25 +14,11 @@
   <div class="grid__container">
 
   <h1>Account</h1>
-    {{ state }}
-     <form action="/account/" method="post" class="form form--login"/>{% csrf_token %}
-    {% if next %}
-    <input type="hidden" name="next" value="{{ next }}"/>
-    {% endif %}
-
-    {{ form.non_field_errors}}
-    <div class="form__field">
-          {{ form.action.errors }}
-          {{ form.action.label_tag }}
-          <label class="fontawesome-user" for="login__password"><span class="hidden">Action</span></label>
-          {{ form.action}}
-          <!--<input id="register__username" type="text" class="form__input" placeholder="Username" value = "{{ username}}"required>-->
-        </div>
-
-    <div class="form__field">
-          <input type="submit" value="Confirm Action"/>
-        </div>
-		<p class="text--center">Done here? <a href="/index">Continue Browsing</a> <span class="fontawesome-arrow-right"></span></p>   
+    <div id = "index body">
+      <p><a href="/accountUpdate">Update Account Information</a></p>
+      <p><a href="/accountDelete">Delete Account</a></p>
+      <p><a href="/accountOrders">View Orders</a></p>
+    </div>
 
     </div>
 

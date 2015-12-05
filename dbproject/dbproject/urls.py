@@ -19,7 +19,8 @@ urlpatterns = patterns('',
 	url(r'^updateOrder/','webstore.views.updateOrder'),
 	url(r'^staffUpdate/','webstore.views.staffUpdate'),
 	url(r'^accountUpdate/','webstore.views.accountUpdate'),
-
+	url(r'^accountDelete/','webstore.views.accountDelete'),
+	url(r'^accountOrders/','webstore.views.accountOrders'),
 	#Currently broken
 	url(r'^placeOrder/','webstore.views.placeOrder'),
 	
