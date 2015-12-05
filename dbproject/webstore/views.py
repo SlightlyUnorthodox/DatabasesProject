@@ -759,13 +759,13 @@ def accountUpdate(request):
 		activeUser = request.session['username']
 	except KeyError:
 		return login_user(request)
-
+	
 	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
 		if form.is_valid():
 			
-			#Assign update attributes
+			#Adssign update attributes
 			newPassword = request.POST.get('password')
 			newPasswordCheck = request.POST.get('repassword')
 			newAddress = request.POST.get('address')
@@ -797,16 +797,14 @@ def accountUpdate(request):
 			newUser.save()
 			print("Log: new user successfully created")
 			state = "Account successfully updated!"
-			render(request,"account.html")
-			return accountUpdate(request,0)
+			return render(request,'accountUpdate.htm',{'form':form,'state':state})
 
 	#Initialize account form on first cycle
 	else:
-		print("0.25")
 		form = AccountUpdateForm()
-	print("1")
+	
 	state = "Enter updated account information"
-	return render(request, "accountUpdate.html",{form:"form",state:"state"})
+	return render(request, "accountUpdate.html",{"form":form,"state":state})
 def accountDelete(request):
 	#Require user login, if not redirect to login page
 	try:
