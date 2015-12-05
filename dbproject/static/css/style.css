@@ -132,7 +132,7 @@ input {
 
 .grid__container {
   margin: 0 auto;
-  max-width: 20rem;
+  max-width: 30rem;
   width: 90%;
 }
 table, td, th{

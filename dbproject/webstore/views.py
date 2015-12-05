@@ -26,28 +26,36 @@ def browse(request):
 	template = loader.get_template('browse.html')
 	context = RequestContext(request, {
 		'product_list': product_list,
-		'price_sorted_product_list': price_sorted_product_list,
+		#'price_sorted_product_list': price_sorted_product_list,
 		})
 	return HttpResponse(template.render(context))
 
 def search(request):
 	query = request.GET.get('q')
-
+	price = request.GET.get('sort')
+	
 	try:
 		query = str(query)
 	except ValueError:
 		query = None
 		results = None
+
 	if query:
-	   	results = Product.objects.order_by('product_name') # product name with str query in it
-		results = results.filter(**{'product_name__icontains': str(query)}) #query, need to put in variable
-		results_price_sorted = Product.objects.order_by('product_price') # product price
-		results_price_sorted = results_price_sorted.filter(**{'product_name__icontains': str(query)}) 
+	   	if price == None:
+	   		results = Product.objects.order_by('product_name') # product name with str query in it
+			results = results.filter(**{'product_name__icontains': str(query)}) #query, need to put in variable
+			#results_price_sorted = None
+			print("1")
+		else:
+			results = Product.objects.order_by('product_price') # product price
+			results = results.filter(**{'product_name__icontains': str(query)}) 
+			#results = None
+			print("2")
 	else:
 		results = None
-		results_price_sorted = None
+		results = None
 	context = RequestContext(request)
-	return render_to_response('browse.html', {"results" : results, "results_price_sorted": results_price_sorted}, context_instance=context)
+	return render_to_response('browse.html', {"results" : results}, context_instance=context)
 
 def order(request):
 	try:

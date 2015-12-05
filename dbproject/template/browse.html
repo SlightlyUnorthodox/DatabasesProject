@@ -28,14 +28,14 @@
 	
 
 
-	<h1>Browse: Test Pages
+	<h1>Browse
 	</h1>
 	</div>
 	<h2>
-		<form>
+		<form class="form form--login">{%csrf_token%}
 			<input type="text" name="q" id="id_q" value="{{ query }}"/>
 			<input type="submit" value="Search" onclick="javascript: form.action='/search/';">
-			<input type="checkbox" id="sorted" value="				Sort By Price" onclick=""> Sort By Price <br>
+			<input type="checkbox" id="sorted" name="sort" value="{{ query }}" onclick=""> Sort By Price <br>
 
 		</form>
 	
@@ -43,7 +43,7 @@
 
     <div ng-hide="">
 		{% if results %}
-		{{results}}
+		<!--{{results}}-->
 		<table style="padding: 5px; font-size:150%" id="Products">
 			
 			<tr style="font: bold"> 
