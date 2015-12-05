@@ -1,0 +1,109 @@
+<!-- // templates/auth.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Account Orders</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type = "text/css" href= "/static/css/style.css" media = "screen"/>
+</head>
+
+<body>
+<body class="align">
+  <div class="site__container">
+  <div class="grid__container">
+
+  <h1>Account Orders</h1>
+    
+     <div ng-hide="">
+    {% if orders %}
+    <!--{{results}}-->
+    <table style="padding: 5px; font-size:150%" id="Orders">
+      
+      <tr style="font: bold"> 
+        <th> Order Date </th>
+        <th> Order Name </th>
+      </tr>
+      {% for p in orders %}
+      <tr >
+        
+        <td> {{ p.order_date }}</td>
+        <td> {{ p.product_paid}} </td>
+
+      </tr>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+
+  
+  {% if productIDsInOrder %}
+  <h2>Here are the Products you ordered:</h2>
+    <table>
+
+      <th>Product Name: </th>
+      <th>Product ID: </th>
+      <th>Product Price: </th>
+
+      {% for product in productIDsInOrder %}
+
+      <tr>
+        <td>{{product.product_name}}</td>
+        <td>{{product.product_id}}</td>
+        <td>{{product.product_price}}</td>
+      <tr>
+      
+      {% endfor %}
+    </table>
+  {% endif %}
+
+
+  {%if yourOrder %}
+    <h2> Here is the data on your order </h2>
+    <h3> Order ID: {{yourOrder.order_id}}</h3>
+    <h3> Amount paid: {{yourOrder.order_paid}}</h3>
+    <h3> yourOrder: {{yourOrder.order_date}}</h3>
+
+  {% endif %}
+  <!--a list of all orders from this store-->
+  {% if orders %}
+  <h2></h2>
+  <table>
+    <tr>
+      <td>Order ID</td>
+      <td>Order Date</td>
+      <td>Order Paid</td>
+      <td>Contains - Quantity</td>
+      <td>Contains - Products </td>
+    </tr>
+    {% for o in orders %}
+    <tr>
+      <td> {{ o.order_id }}</td>
+      <td> {{ o.order_date }} </td>
+      <td> {{ o.order_paid  }}</td>
+      <td> {{ o.contains.quantity}} </td>
+      <td> {% for p in o.contains.productsLONGNAME.all %} 
+        ID: {{p.product_id}},
+        Name: {{p.product_name}} <br> 
+        {% endfor %}
+     
+
+
+
+
+
+          <input type="submit" value="Delete Account"/>
+        </div>
+        <p class="text--center">Done here? <a href="/index">Continue Browsing</a> <span class="fontawesome-arrow-right"></span></p>
+
+  </form>
+    
+    </div>
+
+  </div>
+
+</body>
+    
+</body>
+
+</html>

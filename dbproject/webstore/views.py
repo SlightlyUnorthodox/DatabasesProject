@@ -241,7 +241,7 @@ def placeOrder(request):
 	newOrder.save()	
 
  
- 	orders = Order.objects.order_by('-order_date')
+ 	orders = Order.objects.order_by('-order_date').filter(orders__user_name__in = activeUser)
  	context = RequestContext(request)
 	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, }, context_instance=context)#
 
@@ -855,8 +855,10 @@ def accountOrders(request):
 	except KeyError:
 		return login_user(request)
 	
-
-
+	#orders = Order.objects.select_related('order_date','order_paid').get(orders = activeUser)
+	
+	orders = Order.objects.order_by('-order_date').filter(orders__user_name__in = activeUser)
+	return render(request,'accountOrders.html', {"orders" : orders})
 
 @csrf_exempt
 def login_user(request):
