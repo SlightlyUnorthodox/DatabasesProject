@@ -29,11 +29,11 @@
 	
 
 
-	<h1>Order Placed!
+	<h1>Order Placed! 
 	</h1>
 	{% if productIDsInOrder %}
 	<h2>Here are the Products you ordered:</h2>
-		<table>
+		<table style="padding: 5px; font-size:150%" id="Products">
 
 			<th>Product Name: </th>
 			<th>Product ID: </th>
@@ -62,7 +62,7 @@
 	<!--a list of all orders from this store-->
 	{% if orders %}
 	<h2></h2>
-	<table>
+	<table style="padding: 5px; font-size:150%" id="Orders">
 		<tr>
 			<td>Order ID</td>
 			<td>Order Date</td>
@@ -86,13 +86,12 @@
 
 	</table>
 	{% endif %}
-
-
-
+	<h1>
+  		<a href="/index">Index</a> <span class="fontawesome-arrow-right"></span>
+   	</h1>
+    
 	</div>
     
-	
-
    
     
 </body>

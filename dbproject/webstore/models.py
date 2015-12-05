@@ -54,7 +54,7 @@ class Product(models.Model):
 	product_id = models.AutoField(primary_key=True)	
 	def __unicode__(self):
 		return self.product_id
-	product_description = models.CharField(max_length=200)
+	product_description = models.CharField(max_length=1000)
 	def __unicode__(self):
 		return self.product_description
 	product_price = models.IntegerField()

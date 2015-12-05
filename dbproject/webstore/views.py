@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.views.decorators.csrf import *
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
@@ -232,10 +233,27 @@ def placeOrder(request):
 	while "'" in arrayOfProductIDs:
 		pIDinstance = find_between(arrayOfProductIDs, "'", "'")
 		orderProduct = Product.objects.get(product_id=pIDinstance)
+
+		# Decrement product quantity and check for low stock
+		#productCount = orderProduct.get_field('product_stock_quantity')
+		if orderProduct.product_stock_quantity < 10:
+			# Send severe warning to staff 
+			print("severe warning")
+		elif orderProduct.product_stock_quantity < 100:
+			# Send warning to staff
+			print("minor warning")
+
+		#orderProduct = Product(product_id = int(pIDinstance),product_stock_quantity = int(productCount - 1))
+		
+
+		Product.objects.filter(product_id=pIDinstance).update(product_stock_quantity = orderProduct.product_stock_quantity - 1)
+		
+
 		orderContains.productsLONGNAME.add(orderProduct)
 		arrayOfProductIDs = arrayOfProductIDs.replace("'", "", 2);
 
-	orderProduct.save()
+		orderProduct.save()
+
 	newOrder.contains = orderContains
 
 	newOrder.save()	
@@ -245,9 +263,6 @@ def placeOrder(request):
  	context = RequestContext(request)
 	return render_to_response('orderPlaced.html', {"yourOrder" : newOrder, "productIDsInOrder" : productIDsInOrder, "orders" : orders, }, context_instance=context)#
 
-#
-# This is for Deleting items, HAS NOT BEEN TESTED	
-#
 def staffDeleteItems(request):
 	# Require staff member to be logged in
 	try:

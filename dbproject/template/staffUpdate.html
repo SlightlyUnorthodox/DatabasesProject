@@ -45,9 +45,8 @@
 			Type Order ID To Update: <input type="Order" name="orderIDtoChange" min="0" value="{{ orderIDtoChange }}"/>
 			<input type="Submit" value="Update" onclick="javascript: form.action='/staffUpdateItems/';">
 
-			
-
 		</form>
+
 	</h2>
 
 	<h1>Staff Add:
@@ -76,7 +75,10 @@
 			<input type="Submit" value="Click to Delete Items" onclick="javascript: form.action='/staffDeleteItems/';">
 		</form>
 	</h2>
-    
+	<h1>
+   <a href="/index">Index</a> <span class="fontawesome-arrow-right"></span>
+   </h1>
+    <!--
 	Here is a list of things you can change:
 
 	Products:
@@ -93,8 +95,6 @@
 	{% if allOrders %}
 	{{ allOrders }}
 	{% endif %}
-
-   
-    
+    -->
 </body>
 </html>

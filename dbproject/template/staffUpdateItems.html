@@ -26,54 +26,52 @@
 	<div class="site__container">
 	<div class="grid__container">
 	
-
-
-	<h1>Staff Update:
-	</h1>
+	<h1>Staff Update:</h1>
 	{% if errorMessage %}
 		<h1 style="color: red"> {{errorMessage}} </h1>
 	{% endif %}
-	<h2>
-		Update:
-		<form>
-			<h3>
-			Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
-				{% if productToChange %}
-				<table style="padding: 5px; font-size:50%" id="Products">				
-				<tr style="font: bold"> 
-					<th> Product ID </th>
-					<th> Product Name </th>
-					<th> Product Description </th>
-					<th> Product Price </th>
-					<th> Product Active </th>
-					<th> Product Stock Quantity </th>
-					<th> Supplier ID </th>
-				</tr>
-				<tr >
-					<div style="display: none"><input type="Text" name="productToChangeID" value="{{productToChange.product_id}}" /></div>
-					<td> {{ productToChange.product_id }} </td> 
-					<td> <input type="Text" name="productName" value="{{ productToChange.product_name }}" /></td>
-					<td> <input type="Text" name="productDescription" value="{{ productToChange.product_description }}" /></td>
-					<td> <input type="Text" name="productPrice" value="{{ productToChange.product_price }}" /></td>
-					<td> <input type="Text" name="productActive" value="{{ productToChange.product_active }}" /></td>
-					<td> <input type="Text" name="productStockQuantity" value="{{ productToChange.product_stock_quantity }}" /></td>
-					<td> <input type="Text" name="productSupplies" value="{{ productToChange.supplies.supplier_id }}" /></td>
+			
+	<h3>Fill in what you want to update.  If you wish to leave anything unchanged, leave the field blank.</h3>
+	
+	</div>
 
-				</tr>
-				</table>
-			{% endif %}
+	<h3 >
+		<form>		
+			{% if productToChange %}
+			<table style="padding: 5px; font-size:50%" id="Products">				
+			<tr style="font: bold"> 
+				<th> Product ID </th>
+				<th> Product Name </th>
+				<th> Product Description </th>
+				<th> Product Price </th>
+				<th> Product Active </th>
+				<th> Product Stock Quantity </th>
+				<th> Supplier ID </th>
+			</tr>
+			<tr >
+				<div style="display: none"><input type="Text" name="productToChangeID" value="{{productToChange.product_id}}" /></div>
+				<td> {{ productToChange.product_id }} </td> 
+				<td> <input type="Text" name="productName" value="{{ productToChange.product_name }}" /></td>
+				<td> <input type="Text" name="productDescription" value="{{ productToChange.product_description }}" /></td>
+				<td> <input type="Text" name="productPrice" value="{{ productToChange.product_price }}" /></td>
+				<td> <input type="Text" name="productActive" value="{{ productToChange.product_active }}" /></td>
+				<td> <input type="Text" name="productStockQuantity" value="{{ productToChange.product_stock_quantity }}" /></td>
+				<td> <input type="Text" name="productSupplies" value="{{ productToChange.supplies.supplier_id }}" /></td>
+			</tr>
+		</table>
+		{% endif %}
 
-			{% if userToChange %}
-				<table style="padding: 5px; font-size:50%" id="Products">				
-				<tr style="font: bold"> 
-					<th> User ID </th>
-					<th> User Name</th>
-					<th> User Password </th>
-					<th> User Address</th>
-					<th> User is Staff </th>
-				</tr>
-				<tr >
-					<div style="display: none"><input type="Text" name="userToChangeID" value="{{userToChange.user_id}}" /></div>
+		{% if userToChange %}
+		<table style="padding: 5px; font-size:50%" id="Products">				
+			<tr style="font: bold"> 
+				<th> User ID </th>
+				<th> User Name</th>
+				<th> User Password </th>
+				<th> User Address</th>
+				<th> User is Staff </th>
+			</tr>
+		<tr >
+				<div style="display: none"><input type="Text" name="userToChangeID" value="{{userToChange.user_id}}" /></div>
 					<td> {{ userToChange.user_id }} </td>
 					<td> <input type="Text" name="UserName" value="{{ userToChange.user_name }}" /></td>
 					<td> <input type="Text" name="UserPassword" value="{{ userToChange.user_password }}" /></td>
@@ -116,9 +114,8 @@
 			Displaying Order To Update: <input type="Order" name="OrderID" min="0" value="{{ orderID }}"/>
 			{% endif %}
 			</div>
-	</h2>
+	</h3>
     
-	
 
    
     
