@@ -1,10 +1,9 @@
 ## UF Fall 2015 CIS4301 Databases Project
 
-### Project Name:  <pending>
+### Project Name:  Webstore Database
 ### Authors:
 - Dax Gerts
 - Noah Presser
 
 ###Created: November 6, 2015
-###Description: 
-<pending>
+###Description: Webstore interface with generic functionality
