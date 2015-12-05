@@ -220,9 +220,7 @@ def placeOrder(request):
 
 	quantity = int(request.GET.get('quantity'))
 	
-
 	orderContains = Contains.objects.create(quantity=quantity)
-	orderContains.save()
 
 	stringOfProductIDs = request.GET.get('productsInOrderByID')
 	#array of products, parsed from list
@@ -233,26 +231,36 @@ def placeOrder(request):
 	while "'" in arrayOfProductIDs:
 		pIDinstance = find_between(arrayOfProductIDs, "'", "'")
 		orderProduct = Product.objects.get(product_id=pIDinstance)
-
+		productCount = orderProduct.product_stock_quantity
 		# Decrement product quantity and check for low stock
 		#productCount = orderProduct.get_field('product_stock_quantity')
-		if orderProduct.product_stock_quantity < 10:
+		print("producCount: " + str(productCount))
+		print("quantity: " + str(quantity))
+		if quantity > productCount:
+			print("Log: Error: no overselling allowed")
+			state ="Insufficient product stock, please wait for staff to restock"
+			return render(request,"order.html",{"state":state})
+		elif productCount < 10:
 			# Send severe warning to staff 
-			print("severe warning")
-		elif orderProduct.product_stock_quantity < 100:
+			print("Log: severe warning")
+		elif productCount < 100:
 			# Send warning to staff
-			print("minor warning")
+			print("Log: minor warning")
 
 		#orderProduct = Product(product_id = int(pIDinstance),product_stock_quantity = int(productCount - 1))
 		
 
-		Product.objects.filter(product_id=pIDinstance).update(product_stock_quantity = orderProduct.product_stock_quantity - 1)
-		
+		#Product.objects.filter(product_id=pIDinstance).update(product_stock_quantity = productCount - 1)
+		orderProduct.product_stock_quantity = (productCount -1)
+		orderProduct.save()
+		print(Product.objects.get(product_id=pIDinstance).product_stock_quantity)
 
 		orderContains.productsLONGNAME.add(orderProduct)
 		arrayOfProductIDs = arrayOfProductIDs.replace("'", "", 2);
 
 		orderProduct.save()
+
+	orderContains.save()
 
 	newOrder.contains = orderContains
 
@@ -872,7 +880,7 @@ def accountOrders(request):
 	
 	#orders = Order.objects.select_related('order_date','order_paid').get(orders = activeUser)
 	
-	orders = Order.objects.order_by('-order_date').filter(orders__user_name__in = activeUser)
+	orders = Order.objects.filter(orders__user_name = activeUser)
 	return render(request,'accountOrders.html', {"orders" : orders})
 
 @csrf_exempt

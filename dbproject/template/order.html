@@ -32,9 +32,11 @@
 	</h1>
 
 	<h2>
+		{{ state }}
 		<form>
 			Type your Product Name: <input type="Text" name="productName" value="{{ productName }}"/>
-			Select your Number to Order (NOT WORKING): <input type="Number" name="quantity" min="0" value="{{ quantity }}"/>
+			<!--
+			Select your Number to Order (NOT WORKING): <input type="Number" name="quantity" min="0" value="{{ quantity }}"/>-->
 			<input type="Submit" value="Add to Order" onclick="javascript: form.action='/updateOrder/';">
 
 			<div style="display: none">

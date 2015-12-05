@@ -22,20 +22,21 @@
       
       <tr style="font: bold"> 
         <th> Order Date </th>
-        <th> Order Name </th>
+        <th> Order Ammount </th>
       </tr>
       {% for p in orders %}
       <tr >
         
         <td> {{ p.order_date }}</td>
-        <td> {{ p.product_paid}} </td>
+        <td> {{ p.order_paid}} </td>
 
       </tr>
       {% endfor %}
+      </table>
     {% endif %}
-  </div>
+    </div>
 
-
+<!--
   
   {% if productIDsInOrder %}
   <h2>Here are the Products you ordered:</h2>
@@ -65,38 +66,16 @@
     <h3> yourOrder: {{yourOrder.order_date}}</h3>
 
   {% endif %}
+  -->
   <!--a list of all orders from this store-->
-  {% if orders %}
-  <h2></h2>
-  <table>
-    <tr>
-      <td>Order ID</td>
-      <td>Order Date</td>
-      <td>Order Paid</td>
-      <td>Contains - Quantity</td>
-      <td>Contains - Products </td>
-    </tr>
-    {% for o in orders %}
-    <tr>
-      <td> {{ o.order_id }}</td>
-      <td> {{ o.order_date }} </td>
-      <td> {{ o.order_paid  }}</td>
-      <td> {{ o.contains.quantity}} </td>
-      <td> {% for p in o.contains.productsLONGNAME.all %} 
-        ID: {{p.product_id}},
-        Name: {{p.product_name}} <br> 
-        {% endfor %}
-     
+  
 
 
 
-
-
-          <input type="submit" value="Delete Account"/>
         </div>
         <p class="text--center">Done here? <a href="/index">Continue Browsing</a> <span class="fontawesome-arrow-right"></span></p>
 
-  </form>
+        </table>
     
     </div>
 
