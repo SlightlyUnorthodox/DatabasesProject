@@ -766,9 +766,9 @@ def accountUpdate(request):
 	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountUpdateForm(request.POST)
-		print("hm?")
+		
 		if form.is_valid():
-			print("yo yo yo")
+		
 			#Adssign update attributes
 			newPassword = request.POST.get('password')
 			newPasswordCheck = request.POST.get('repassword')
@@ -804,6 +804,7 @@ def accountUpdate(request):
 	
 	state = "Enter updated account information"
 	return render(request, "accountUpdate.html",{"form":form,"state":state})
+
 def accountDelete(request):
 	#Require user login, if not redirect to login page
 	try:
@@ -811,19 +812,21 @@ def accountDelete(request):
 	except KeyError:
 		return login_user(request)
 
+	#Initialize reference variable(s)
+	confirm = ""
+
 	#Check for POST request, if valid get action value
 	if request.method == 'POST':
 		form = AccountDeleteForm(request.POST)
+		
 		if form.is_valid():
-			print("check0")
+			
 			#Assign update attributes
 			confirm = request.POST.get('confirm')
-			print("check1")
+			
 			#Load user reference
 			user = User.objects.get(user_name = activeUser)
-			print(user.user_name)
-			print(user.email)
-			print("check2")
+			
 			#If confirmatin successfully given, delete account
 			#Report and log success, cycle back to main account page
 			if confirm == user.user_email:
@@ -832,8 +835,8 @@ def accountDelete(request):
 				
 				#Delete user
 				User.objects.filter(user_name = activeUser).delete()
-
-				return render(request, 'account.html',{'form':form,'state':state})
+				del request.session['username']
+				return render(request, 'accountDelete.html',{'form':form,'state':state})
 			
 			#If confirmation unsuccessful, report and cycle page
 			state = "Email confirmation incorrect"
@@ -843,7 +846,7 @@ def accountDelete(request):
 	else:
 		form = AccountDeleteForm()
 
-	state = "Enter updated account information"
+	state = "Enter user email to confirm account deletion"
 	return render(request, "accountDelete.html",{'form':form,'state':state})
 
 def accountOrders(request):
