@@ -769,6 +769,8 @@ def account(request,round = 0):
 	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
+		if request.session['staff'].exist() == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -780,6 +782,8 @@ def accountUpdate(request):
 	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
+		if request.session['staff'].exist() == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 	
@@ -832,6 +836,8 @@ def accountDelete(request):
 	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
+		if request.session['staff'].exist() == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 
@@ -873,8 +879,11 @@ def accountDelete(request):
 	return render(request, "accountDelete.html",{'form':form,'state':state})
 
 def accountOrders(request):
+	#Require user login, if not redirect to login page
 	try:
 		activeUser = request.session['username']
+		if request.session['staff'].exist() == False:
+			return login_user(request)
 	except KeyError:
 		return login_user(request)
 	
@@ -888,6 +897,7 @@ def login_user(request):
 	#logout user from session
 	try:
 		del request.session['username']
+		del request.session['staff']
 	except KeyError:
 		pass
 
