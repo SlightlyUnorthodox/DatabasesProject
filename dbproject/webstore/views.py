@@ -245,17 +245,29 @@ def placeOrder(request):
 			print("Log: Error: no overselling allowed")
 			state ="Insufficient product stock, please wait for staff to restock"
 			email = EmailMessage(
-				'Webstore: Product stock low',
-				(str(orderProduct.product_name) + "stock count is low, please restock"),
+				'Webstore: Product out of stock',
+				(str(orderProduct.product_name) + " is out of stock, please restock"),
 				to = [str(request.session['email'])]
 			)
 			email.send()
 			return render(request,"order.html",{"state":state})
 		elif productCount < 10:
-			# Send severe warning to staff 
+			# Send severe warning to staff
+			email = EmailMessage(
+				'Webstore: Product is almost out of stock',
+				(str(orderProduct.product_name) + " is almost out of stock, please restock"),
+				to = [str(request.session['email'])]
+			)
+			email.send() 
 			print("Log: severe warning")
 		elif productCount < 100:
 			# Send warning to staff
+			email = EmailMessage(
+				'Webstore: Product is low on stock',
+				(str(orderProduct.product_name) + " is low on stock, please restock"),
+				to = [str(request.session['email'])]
+			)
+			email.send()
 			print("Log: minor warning")
 
 		#orderProduct = Product(product_id = int(pIDinstance),product_stock_quantity = int(productCount - 1))
